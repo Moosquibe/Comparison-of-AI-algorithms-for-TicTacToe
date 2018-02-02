@@ -8,4 +8,6 @@ Current status: The naive minmax search is working. As expected, it is terribly 
 
 $$\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! \sim n! =O(n^{n+1}e^{-n})=O(e^{(n+1)\log n - n}).$$
 
+(You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
+
 Next I will try to speed up the naive recursion by hashing the game configurations so that no reexploration is necessary.
