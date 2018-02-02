@@ -6,7 +6,7 @@ I am currently working on implementing a simple generalized Tic-Tac-Toe game on 
 
 Mini-Diary: 
 
-**2/1/2018**: The naive minmax search is working. As expected, it is terribly inefficient and cannot handle larger than a 3x4 board. This is not surprising at all as the search space for the $k$th move is $(n+1-k)!$ large, where $n$ stands for the area of the board. Thus the total running time to play a game (if the computer was playing against itself) would be given by the [Kurepa function](http://mathworld.wolfram.com/Smarandache-KurepaFunction.html):
+**2/1/2018**: The naive minmax search is working. As expected, it is terribly inefficient and cannot handle larger than a 3x4 board. This is not surprising at all as the search space for the $k$th move is $(n+1-k)!$ large, where $n$ stands for the area of the board. Thus the total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
 
 $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
 
@@ -14,4 +14,4 @@ Here just the largest term is $16! = 20922789888000 \approx 2 * 10^{13}$ for a 4
 
 (You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
 
-Next I will try to speed up the naive recursion by hashing the already evaluated game configurations so that no reexploration is necessary and see what kind of speed-up I can get. The hopes are not too high as the order
+Next I will try to speed up the naive recursion by hashing the already evaluated game configurations so that no reexploration is necessary and see what kind of speed-up I can get.
