@@ -10,7 +10,7 @@ Mini-Diary:
 
 $$\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! \sim n! =O(n^{n+1}e^{-n})=O(e^{(n+1)\log n - n}),$$
 
-which is $16! = 20922789888000 \approx 2 * 10^13$ for a 4x4 board. Thankfully for a 3x3 board, it is only $9! = 362880\approx 3.5 * 10^5$. Big difference.
+which is $16! = 20922789888000 \approx 2 * 10^{13}$ for a 4x4 board. Thankfully for a 3x3 board, it is only $9! = 362880\approx 3.5 * 10^5$. Big difference.
 
 (You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
 
