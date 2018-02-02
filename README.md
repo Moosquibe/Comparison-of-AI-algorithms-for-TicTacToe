@@ -4,4 +4,4 @@ This repository contains my implementations to the algorithms covered in the Par
 I am currently working on implementing a simple generalized Tic-Tac-Toe game on a board of arbitrary size (so that there are relatively small amount of implementation details) using (1) Evolutionary algorithms: (a) Brute Force Minmax search of the game tree; (b) Alpha-Beta Pruning of the game tree; (2) Reinforcement learning based on a learned value function. The main file is TicTacToe.java.
 
 
-Current status: The minmax search is working. As expected it is terribly inefficient and cannot handle larger than a 3x4 board. Next I will try to speed up the naive recursion by hashing the game configurations so that no reexploration is necessary.
+Current status: The naive minmax search is working. As expected, it is terribly inefficient and cannot handle larger than a 3x4 board. Next I will try to speed up the naive recursion by hashing the game configurations so that no reexploration is necessary.
