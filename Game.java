@@ -18,7 +18,7 @@ abstract class Game {
 
 		int area = width * height;
 
-		if (width * height <= 16)
+		if (width * height < 16)
 			lengthToWin = 3;
 		else if (width * height <=  36)
 			lengthToWin = 4;
@@ -244,5 +244,3 @@ abstract class Game {
 	   according to the algorithm to use. The implementation has to c
 	   all whoWon() and isFull() after the step has been executed. */
 }
-
-

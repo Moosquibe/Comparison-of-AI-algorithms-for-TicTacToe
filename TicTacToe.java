@@ -127,12 +127,14 @@ public class TicTacToe {
 			clearScreen();
 			System.out.print("Which algorithm would you like the computer to use?" +
 							"\n\n 1) Minmax search" +
-							"\n 2) AlphaBeta pruning" +
-							"\n 3) Learned value function" +
-							"\n\nInput (1-3): ");
+							"\n 2) Minmax search with hashing" +
+							"\n 3) AlphaBeta pruning" +
+							"\n 4) Learned value function" +
+							"\n\nInput (1-4): ");
 			try {
 				algorithmUsed = Integer.parseInt(input.next());
-				if (algorithmUsed == 1 || algorithmUsed == 2 || algorithmUsed == 3)
+				if (algorithmUsed == 1 || algorithmUsed == 2 || 
+					algorithmUsed == 3 || algorithmUsed == 4)
 					break;
 			}
 			catch(NumberFormatException nfe) {}
@@ -157,9 +159,11 @@ public class TicTacToe {
 		switch (algorithmUsed) {
 			case 1: game = new MinMaxGame(height, width, playerStart);
 					break;
-			case 2: game = new AlphaBetaGame(height, width, playerStart);
+			case 2: game = new MinMaxGameHashed(height, width, playerStart);
 					break;
-			case 3: game = new LearnedValueGame(height, width, playerStart);
+			case 3: game = new AlphaBetaGame(height, width, playerStart);
+					break;
+			case 4: game = new LearnedValueGame(height, width, playerStart);
 					break;
 		}
 	}
