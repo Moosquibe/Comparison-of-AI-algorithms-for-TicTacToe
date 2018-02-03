@@ -70,6 +70,7 @@ abstract class Game {
 	}
 
 	public boolean isLegalMove(String move) {
+		// Checks if the string move represents a legal move
 		int moveHeight = ((int)move.charAt(0)) - 65;
 		if (moveHeight < 0 || moveHeight > (height - 1)) {
 			System.out.print("3");
@@ -99,7 +100,6 @@ abstract class Game {
 		}
 		return true;
 	}
-
 	protected static int whoWon(int[][] table, int lastMoveY, int lastMoveX, int player, int lengthToWin) {
 		/* Checks if the game was won after player made a move to
 		   (lastMoveX,lastMoveY). Returns:
@@ -160,7 +160,6 @@ abstract class Game {
 		if (count >= lengthToWin) 
 			return player;
 		
-
 		// Check the if a win was triggered SW-NE diagonally
 		count = 1;
 		currentY = lastMoveY - 1;
@@ -184,7 +183,6 @@ abstract class Game {
 
 		return 0;
 	}
-
 	protected int whoWon(int lastMoveY, int lastMoveX, int player) {
 		/* Checks if the game was won after player made a move to
 		   (lastMoveX,lastMoveY). Returns:
@@ -198,7 +196,6 @@ abstract class Game {
 		}
 		return 0;
 	}
-
 	protected static boolean isFull(int[][] table){
 		// Check wether there are no moves yet in table
 		for(int i = 0; i < table.length; i++){
@@ -209,12 +206,10 @@ abstract class Game {
 		}
 		return true;
 	}
-
 	protected boolean isFull() {
 		// Check wether there are no moves yet
 		return isFull(table);
 	}
-
 	public int step(String move) {
 		/* Moves the game ahead by one step. Returns:
 			O: Nobody has won yet
@@ -233,14 +228,12 @@ abstract class Game {
 		else 
 			return 1; // Player won
 	}
-
 	public void restart(boolean PlayerStart) {
 		// Restarts the game
 		clearTable();
 		if (!PlayerStart)
 			computerMoves();
 	}
-
 	abstract protected int computerMoves();
 	/* Computer moves. Afterwards returns
 		0 : Nobody won yet

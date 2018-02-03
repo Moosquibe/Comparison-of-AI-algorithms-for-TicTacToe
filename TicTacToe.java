@@ -12,11 +12,9 @@ public class TicTacToe {
 		Scanner input = new Scanner(System.in);
 		String stringResponse;
 		char charResponse;
-
 		boolean progOn = true;
 		boolean gameOn = true;
 		initialize(input);
-
 		// Main program loop
 		while(progOn) {
 			// Main game loop
@@ -24,8 +22,6 @@ public class TicTacToe {
 				clearScreen();
 				game.printTable();
 				System.out.print("Your move (Q to Quit): ");
-
-				
 				try{
 					stringResponse = input.nextLine();
 					if (stringResponse.length() == 1 && stringResponse.charAt(0) == 'Q')
@@ -36,7 +32,7 @@ public class TicTacToe {
 							case 1: {
 								clearScreen();
 								game.printTable();
-								System.out.print("\n\nCongratulations, you won!");
+								System.out.print("\nCongratulations, you won!");
 								gameOn = false;
 								input.nextLine();
 								break;
@@ -44,7 +40,7 @@ public class TicTacToe {
 							case 2: {
 								clearScreen();
 								game.printTable();
-								System.out.print("\n\nThe computer won, better luck next time");
+								System.out.print("\nThe computer won, better luck next time");
 								gameOn = false;
 								input.nextLine();
 								break;
@@ -52,7 +48,7 @@ public class TicTacToe {
 							case 3: {
 								clearScreen();
 								game.printTable();
-								System.out.print("\n\nNo more possible moves, it's a tie.");
+								System.out.print("\nNo more possible moves, it's a tie.");
 								gameOn = false;
 								input.nextLine();
 								break;
@@ -60,7 +56,6 @@ public class TicTacToe {
 						}
 					}
 				}
-
 				catch(StringIndexOutOfBoundsException e) {
 				 	System.out.print("\n\nIllegal input!");
 				 	(new Scanner(System.in)).nextLine();
@@ -106,7 +101,6 @@ public class TicTacToe {
 		/* Initializes game using user input */
 		boolean playerStart;
 		int algorithmUsed;
-
 		int height, width;
 		while (true) {
 			clearScreen();
@@ -129,12 +123,10 @@ public class TicTacToe {
 			}
 			catch(NumberFormatException nfe) {}
 		}
-
-
 		while (true) {
 			clearScreen();
 			System.out.print("Which algorithm would you like the computer to use?" +
-							"\n\n 1) Brute force search" +
+							"\n\n 1) Minmax search" +
 							"\n 2) AlphaBeta pruning" +
 							"\n 3) Learned value function" +
 							"\n\nInput (1-3): ");
@@ -145,7 +137,6 @@ public class TicTacToe {
 			}
 			catch(NumberFormatException nfe) {}
 		}
-
 		char playerStartChar;
 		while (true) {
 			clearScreen();
@@ -163,7 +154,6 @@ public class TicTacToe {
 			}
 			catch(RuntimeException e) {}
 		}
-
 		switch (algorithmUsed) {
 			case 1: game = new MinMaxGame(height, width, playerStart);
 					break;
@@ -173,7 +163,6 @@ public class TicTacToe {
 					break;
 		}
 	}
-
 	private static void clearScreen() {  
 		// Clears the console display
     	System.out.print("\033[H\033[2J");  
