@@ -1,5 +1,5 @@
 # Mathematics Of Deep Learning Parallel Curricula
-This repository contains my implementations to the algorithms covered in the Parallel Curricula of the [Mathematics of Deep Learning]{https://joanbruna.github.io/MathsDL-spring18/} class in the Spring semester of 2018 taught by Joan Bruna with Cinjon Resnick as TA. The main goal of the semester is to understand [Alpha Go](https://deepmind.com/research/alphago/).
+This repository contains my implementations to the algorithms covered in the Parallel Curricula of the [Mathematics of Deep Learning](https://joanbruna.github.io/MathsDL-spring18/) class in the Spring semester of 2018 taught by Joan Bruna with Cinjon Resnick as TA. The main goal of the semester is to understand [Alpha Go](https://deepmind.com/research/alphago/).
 
 I am currently working on implementing a simple generalized Tic-Tac-Toe game on a board of arbitrary size (so that there are relatively small amount of implementation details) using (1) Evolutionary algorithms: (a) Brute Force Minmax search of the game tree; (b) Alpha-Beta Pruning of the game tree; (2) Reinforcement learning based on a learned value function. Eventually, I want to use a neural network to learn this value function by having my program battle my friends. (Well, most probably my wife exclusively, but we'll see. :) ) The main file is TicTacToe.java.
 
