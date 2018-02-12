@@ -220,13 +220,13 @@ abstract class Game {
 		int move_height = (int)(move.charAt(0)) - 65;
 		int move_width = Integer.parseInt(move.substring(1,move.length())) - 1;
 		table[move_height][move_width] = 1;
-		if (isFull())
-			return 3;
-		else if (whoWon(move_height, move_width, 1) != 1)
-			// Either computer won or nobody won or full board
-			return computerMoves(); 
-		else 
+		if (whoWon(move_height, move_width, 1) == 1)
 			return 1; // Player won
+		else if (isFull())
+			return 3; // Tie
+		else 
+			// Computer's turn
+			return computerMoves(); 
 	}
 	public void restart(boolean PlayerStart) {
 		// Restarts the game

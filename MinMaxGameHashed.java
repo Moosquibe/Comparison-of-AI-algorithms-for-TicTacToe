@@ -11,8 +11,9 @@ class MinMaxGameHashed extends MinMaxGame {
 		else
 			starterPlayer = 2;
 	}
+	@override
 	protected int[] getValue(int[][] table, int lastMoveY, int lastMoveX, 
-								int player, int lengthToWin, int depth) {
+								int player, int depth) {
 		// Opponent makes move (lastMoveY, lastMoveX) leading to table. 
 		// RETURNS: 
 		//    First entry:  The value of the position for player.

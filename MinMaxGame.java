@@ -5,7 +5,7 @@ class MinMaxGame extends Game {
 	public MinMaxGame(int height, int width, boolean playersTurn) {
 		super(height, width, playersTurn);
 	}
-
+	@override
 	protected int computerMoves() {
 		/* Computer moves. Afterwards returns
 		0 : Nobody won yet
@@ -23,7 +23,7 @@ class MinMaxGame extends Game {
 					// Trying a move, getting its value for the enemy and the
 					// length of the resulting game assuming optimal play.
 					table[i][j] = 2;
-					moveValue = getValue(table, i, j, 1, lengthToWin, 1);
+					moveValue = getValue(table, i, j, 1, 1);
 					table[i][j] = 0;
 
 					// We choose the move that gives the least value to the
@@ -55,7 +55,7 @@ class MinMaxGame extends Game {
 			return 0;
 	}
 	protected int[] getValue(int[][] table, int lastMoveY, int lastMoveX, 
-								int player, int lengthToWin, int depth) {
+								int player, int depth) {
 		// Opponent makes move (lastMoveY, lastMoveX) leading to table. 
 		// RETURNS: 
 		//    First entry:  The value of the position for player.
@@ -79,7 +79,7 @@ class MinMaxGame extends Game {
 					if (table[i][j] == 0) {
 						// Trying out move (i,j)
 						table[i][j] = player;
-						value = getValue(table, i, j, 3-player, lengthToWin, depth + 1);
+						value = getValue(table, i, j, 3-player, depth + 1);
 						table[i][j] = 0;
 						if ((-value[0] == bestValue[0] && bestValue[0] == 1 && 
 														value[1] < bestValue[1]) ||
