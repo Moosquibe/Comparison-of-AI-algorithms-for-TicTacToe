@@ -19,3 +19,5 @@ Next I will try to speed up the naive recursion by hashing the already evaluated
 **2/3/2018** Fixed a little bug so that the computer now tries to win as fast as it can or survive as long as it can even if it would surely loose with optimal play from all players.
 
 **2/3/2018** Implemented a hashmap to avoid having to recompute and now the program can handle a 4x4 board, although not gracefully. Since this is an inefficient baseline algorithm anyway, there is no point in optimizing it further and thus next I will move on to implementing the AlphaBetaPruning.
+
+**2/11/2018** Implemented the alpha-beta pruning algorithm. Unfortunately, the speedup isn't enough to allow for larger boards. In fact, it ended up slower compared to the hashed full tree search. Next time I will implement an evaluation function to be able to limit the search depth.
