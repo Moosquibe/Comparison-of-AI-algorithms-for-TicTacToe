@@ -96,7 +96,6 @@ public class TicTacToe {
 			}
 		}
 	}
-
 	private static void initialize(Scanner input) {
 		/* Initializes game using user input */
 		boolean playerStart;
@@ -127,7 +126,7 @@ public class TicTacToe {
 			clearScreen();
 			System.out.print("Which algorithm would you like the computer to use?" +
 							"\n\n 1) Minmax search" +
-							"\n 2) Minmax search with hashing" +
+							"\n 2) Minmax search with memoization" +
 							"\n 3) AlphaBeta pruning" +
 							"\n 4) Learned value function" +
 							"\n\nInput (1-4): ");
@@ -160,11 +159,11 @@ public class TicTacToe {
 			case 1: game = new MinMaxGame(height, width, playerStart);
 					break;
 			case 2: game = new MinMaxGameHashed(height, width, playerStart);
-					break;
-			case 3: game = new AlphaBetaGame(height, width, playerStart);
-					break;
-			case 4: game = new LearnedValueGame(height, width, playerStart);
-					break;
+			 		break;
+			// case 3: game = new AlphaBetaGame(height, width, playerStart);
+			// 		break;
+			// case 4: game = new LearnedValueGame(height, width, playerStart);
+			// 		break;
 		}
 	}
 	private static void clearScreen() {  

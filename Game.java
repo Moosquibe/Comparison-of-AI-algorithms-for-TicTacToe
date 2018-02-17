@@ -5,32 +5,80 @@ abstract class Game {
 	protected int[][] table;
 	protected int[] scoreBoard;
 	protected int lengthToWin;
+	protected int lastMoveY, lastMoveX;
+	protected int activeAgent;
+	protected int movesCompleted;
+
+	protected class Value implements Comparable<Value>{
+		// Represents the values of positions. This is the default implementation,
+		// override if necessary by defining a subclass of it nested in a subclass
+		// of game.
+
+		int outcome, lengthOfGame;
+
+		public Value(int outcome, int lengthOfGame) {
+			this.outcome = outcome;
+			this.lengthOfGame = lengthOfGame;
+		}
+		public void flipValue() {
+			outcome = - outcome;
+			lengthOfGame += 1;
+		}
+		public int compareTo(Value other) {
+			// Winning is better than losing and winning sooner is
+			// better than later and losing later is better than sooner
+			if (outcome > other.outcome)
+				return 1;
+			else if (outcome < other.outcome) 
+				return -1;
+			else {
+				if (outcome == 1) 
+					return (lengthOfGame < other.lengthOfGame) ? 1 : -1;
+				else if (outcome == -1)
+					return (lengthOfGame > other.lengthOfGame) ? 1 : -1;
+				else
+					return 0;
+			}
+		}
+	}
+	protected class ValueWithMove extends Value {
+			// Value of a position with the best move out of that position
+			int bestMoveY, bestMoveX;
+
+			public ValueWithMove(int outcome, int lengthOfGame, int bestMoveY, int bestMoveX) {
+				super(outcome, lengthOfGame);
+				this.bestMoveY = bestMoveY;
+				this.bestMoveX = bestMoveX;
+			}
+	}
 
 	public Game(int height, int width, boolean playersTurn) {
 		/* Initializes a game on a table of size height X width,
 		   where lengthToWin consequtive entries are needed for victory
 		   either horizontally, vertically, or diagonally. If playersTurn
-		   is true then player starts */
+		   is true then human player starts. */
 
 		this.width = width;
 		this.height = height;
+		activeAgent = (playersTurn == true) ? 1 : 2;
 		scoreBoard = new int[] {0,0};
+		movesCompleted = 0;
 
 		int area = width * height;
 
-		if (width * height < 16)
+		// Setting the condition for victory
+		if (area < 16)
 			lengthToWin = 3;
-		else if (width * height <=  36)
+		else if (area <=  36)
 			lengthToWin = 4;
 		else
 			lengthToWin = 5;
 		
 		table = new int[height][width];
 		clearTable();
-		if (!playersTurn)
+		if (activeAgent == 2)
 			computerMoves();
 	}
-
 	public void printTable() {
 		// Displays the current standing of the board
 		System.out.print("Player(X): " + scoreBoard[0] + " Computer (O): " + 
@@ -68,7 +116,6 @@ abstract class Game {
 			}
 		}
 	}
-
 	public boolean isLegalMove(String move) {
 		// Checks if the string move represents a legal move
 		int moveHeight = ((int)move.charAt(0)) - 65;
@@ -100,51 +147,45 @@ abstract class Game {
 		}
 		return true;
 	}
-	protected static int whoWon(int[][] table, int lastMoveY, int lastMoveX, int player, int lengthToWin) {
-		/* Checks if the game was won after player made a move to
-		   (lastMoveX,lastMoveY). Returns:
-			O: Nobody has won yet
-		   	1: Player won
-		   	2: Computer won */
+	protected boolean winOnLastMove() {
+		// Checks if the last move triggers a win
 
-		// Check the if a win was triggered vertically
+		// Check if a win was triggered vertically
 		int count = 1;
 		int currentY = lastMoveY + 1;
-		while (currentY < table.length && table[currentY][lastMoveX] == player) {
+		while (currentY < table.length && table[currentY][lastMoveX] == activeAgent) {
 			count++;
 			currentY++;
 		}
 		currentY = lastMoveY - 1;
-		while (currentY >= 0 && table[currentY][lastMoveX] == player) {
+		while (currentY >= 0 && table[currentY][lastMoveX] == activeAgent) {
 			count++;
 			currentY--;
 		}
 		if (count >= lengthToWin) {
-			return player;
+			return true;
 		}
-
 		// Check the if a win was triggered horizontally
 		count = 1;
 		int currentX = lastMoveX + 1;
-		while (currentX < table[0].length && table[lastMoveY][currentX] == player) {
+		while (currentX < table[0].length && table[lastMoveY][currentX] == activeAgent) {
 			count++;
 			currentX++;
 		}
 		currentX = lastMoveX - 1;
-		while (currentX >= 0 && table[lastMoveY][currentX] == player) {
+		while (currentX >= 0 && table[lastMoveY][currentX] == activeAgent) {
 			count++;
 			currentX--;
 		}
 		if (count >= lengthToWin) {
-			return player;
+			return true;
 		}
-
 		// Check the if a win was triggered NW-SE diagonally
 		count = 1;
 		currentY = lastMoveY + 1;
 		currentX = lastMoveX + 1;
 		while (currentY < table.length && currentX < table[0].length && 
-					table[currentY][currentX] == player) {
+					table[currentY][currentX] == activeAgent) {
 			count++;
 			currentY++;
 			currentX++;
@@ -152,20 +193,21 @@ abstract class Game {
 		currentY = lastMoveY - 1;
 		currentX = lastMoveX - 1;
 		while (currentY >= 0 &&  currentX >= 0 &&
-					table[currentY][currentX] == player) {
+					table[currentY][currentX] == activeAgent) {
 			count++;
 			currentY--;
 			currentX--;
 		}
-		if (count >= lengthToWin) 
-			return player;
-		
+		if (count >= lengthToWin) {
+			return true;
+		}
+
 		// Check the if a win was triggered SW-NE diagonally
 		count = 1;
 		currentY = lastMoveY - 1;
 		currentX = lastMoveX + 1;
 		while (currentY >= 0 && currentX < table[0].length && 
-					table[currentY][currentX] == player) {
+					table[currentY][currentX] == activeAgent) {
 			count++;
 			currentY--;
 			currentX++;
@@ -173,31 +215,19 @@ abstract class Game {
 		currentY = lastMoveY + 1;
 		currentX = lastMoveX - 1;
 		while (currentY < table.length &&  currentX >= 0 &&
-					table[currentY][currentX] == player) {
+					table[currentY][currentX] == activeAgent) {
 			count++;
 			currentY++;
 			currentX--;
 		}
-		if (count >= lengthToWin)
-			return player;
-
-		return 0;
-	}
-	protected int whoWon(int lastMoveY, int lastMoveX, int player) {
-		/* Checks if the game was won after player made a move to
-		   (lastMoveX,lastMoveY). Returns:
-			O: Nobody has won yet
-		   	1: Player won
-		   	2: Computer won */
-
-		if (Game.whoWon(table, lastMoveY, lastMoveX, player, lengthToWin) == player) {
-			scoreBoard[player-1]++;
-			return player;
+		if (count >= lengthToWin) {
+			return true;
 		}
-		return 0;
+
+		return false;
 	}
-	protected static boolean isFull(int[][] table){
-		// Check wether there are no moves yet in table
+	protected boolean isFull(){
+		// Check whether there are no moves left in table
 		for(int i = 0; i < table.length; i++){
 			for(int j = 0; j < table[i].length; j++) {
 				if (table[i][j] == 0)
@@ -206,32 +236,37 @@ abstract class Game {
 		}
 		return true;
 	}
-	protected boolean isFull() {
-		// Check wether there are no moves yet
-		return isFull(table);
-	}
 	public int step(String move) {
-		/* Moves the game ahead by one step. Returns:
+		/*  Human player makes a step followed by the AI making one.
+		Returns:
 			O: Nobody has won yet
 		   	1: Player won
 		   	2: Computer won 
 		   	3: No more legal moves*/
 
-		int move_height = (int)(move.charAt(0)) - 65;
-		int move_width = Integer.parseInt(move.substring(1,move.length())) - 1;
-		table[move_height][move_width] = 1;
-		if (whoWon(move_height, move_width, 1) == 1)
-			return 1; // Player won
+		assert activeAgent == 1;
+
+		lastMoveY = (int)(move.charAt(0)) - 65;
+		lastMoveX = Integer.parseInt(move.substring(1,move.length())) - 1;
+		table[lastMoveY][lastMoveX] = 1;
+		movesCompleted += 1;
+		if (winOnLastMove()) {
+			// Player won
+			scoreBoard[0] += 1;
+			return 1;
+		}
 		else if (isFull())
 			return 3; // Tie
-		else 
+		else {
 			// Computer's turn
+			activeAgent = 2;
 			return computerMoves(); 
+		}
 	}
-	public void restart(boolean PlayerStart) {
+	public void restart(boolean playerStart) {
 		// Restarts the game
 		clearTable();
-		if (!PlayerStart)
+		if (!playerStart)
 			computerMoves();
 	}
 	abstract protected int computerMoves();
@@ -241,6 +276,5 @@ abstract class Game {
 		3 : Table is full 
 
 	   This method will be implemented differently in each subclass
-	   according to the algorithm to use. The implementation has to c
-	   all whoWon() and isFull() after the step has been executed. */
+	   according to the algorithm to use.*/
 }

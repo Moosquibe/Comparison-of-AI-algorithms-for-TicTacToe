@@ -1,99 +1,97 @@
 import java.util.Scanner;
 
 class MinMaxGame extends Game {
+	// Implements the negamax tree search algorithm.
 
 	public MinMaxGame(int height, int width, boolean playersTurn) {
 		super(height, width, playersTurn);
 	}
-	@override
+	@Override
 	protected int computerMoves() {
 		/* Computer moves. Afterwards returns
 		0 : Nobody won yet
 		2 : Computer won
 		3 : Table is full  */
 
-		int moveY=0;
-		int moveX=0;
-		int[] bestMoveValue = new int[] {-10, 0};
-		int[] moveValue = new int[2];
+		assert activeAgent == 2;
 
-		for(int i = 0; i < height; i++) {
-			for(int j = 0; j < width; j++) {
-				if (table[i][j] == 0) {
-					// Trying a move, getting its value for the enemy and the
-					// length of the resulting game assuming optimal play.
-					table[i][j] = 2;
-					moveValue = getValue(table, i, j, 1, 1);
-					table[i][j] = 0;
-
-					// We choose the move that gives the least value to the
-					// enemy. When two moves are of equal value, we choose 
-					// between them in a way such that the computer wins
-					// as fast as it can or survives as long as it can given
-					// optimal play.
-
-					if ((-moveValue[0] == bestMoveValue[0] && bestMoveValue[0] == 1 && 
-													moveValue[1] < bestMoveValue[1]) ||
-						(-moveValue[0] == bestMoveValue[0] && bestMoveValue[0] == -1 && 
-													moveValue[1] > bestMoveValue[1]) ||
-						(-moveValue[0] > bestMoveValue[0])) {
-						bestMoveValue[0] = -moveValue[0];
-						bestMoveValue[1] = moveValue[1];
-						moveY = i;
-						moveX = j;
-					}
-				}
-			}
-		}
-		//(new Scanner(System.in)).nextLine();
-		table[moveY][moveX] = 2;
-		if (whoWon(moveY, moveX, 2) == 2)
+		ValueWithMove move = getBestMove();
+		lastMoveY=move.bestMoveY;
+		lastMoveX=move.bestMoveX;
+	
+		table[lastMoveY][lastMoveX] = 2;
+		movesCompleted += 1;
+		if (winOnLastMove()) {
+			scoreBoard[1] += 1;
 			return 2;
+		}
 		else if (isFull())
 			return 3;
-		else
+		else {
+			activeAgent = 1;
 			return 0;
+		}
 	}
-	protected int[] getValue(int[][] table, int lastMoveY, int lastMoveX, 
-								int player, int depth) {
-		// Opponent makes move (lastMoveY, lastMoveX) leading to table. 
-		// RETURNS: 
-		//    First entry:  The value of the position for player.
-		//    Second entry: depth + The lenght of the resulting game assuming optimal play.
-		// 
+	protected ValueWithMove getBestMove() {
+		// Getting best move at a current state of the table.
+		// RETURNS: Value of position and best move realizing that value.
+		//    
 		// NOTE: opponent = 3 - player. The second coordinate is needed so that the 
 		// computer player wants to win as quickly as possible or survive as long 
 		// as it can.
+		//
+		// Return the value if the game is over after opponents move.
+		// In this case (-1,-1) for best move in place of null.
 
-		boolean lost = (Game.whoWon(table, lastMoveY, lastMoveX, 3-player, lengthToWin) 
-																			== 3-player);
-		if (lost) 
-			return new int[] {-1, depth};
-		else if (Game.isFull(table))
-			return new int[] {0, depth};
+		int tempAgent = activeAgent;
+		int tempY = lastMoveY;
+		int tempX = lastMoveX;
+		
+
+		activeAgent = 3 - tempAgent;
+		if (winOnLastMove()) {
+			return new ValueWithMove(-1, movesCompleted, -1, -1);
+		}
+		else if (isFull()) {
+			return new ValueWithMove(0, movesCompleted, -1, -1);
+		}
 		else {
-			int[] bestValue = new int[] {-10, depth};
-			int[] value = new int[2];
+			ValueWithMove move;
+			ValueWithMove bestMove = new ValueWithMove(-2,0, -1, -1);
 			for(int i = 0; i < table.length; i++) {
 				for(int j = 0; j < table[i].length; j++) {
 					if (table[i][j] == 0) {
+
 						// Trying out move (i,j)
-						table[i][j] = player;
-						value = getValue(table, i, j, 3-player, depth + 1);
+						lastMoveY = i;
+						lastMoveX = j;
+						table[i][j] = tempAgent;
+						activeAgent = 3 - tempAgent;
+						movesCompleted += 1;
+
+						// Evaluating the value of the action
+						move = getBestMove();
+						move.flipValue();
+
+						// Undoing tried move
 						table[i][j] = 0;
-						if ((-value[0] == bestValue[0] && bestValue[0] == 1 && 
-														value[1] < bestValue[1]) ||
-							(-value[0] == bestValue[0] && bestValue[0] == -1 && 
-														value[1] > bestValue[1]) ||
-							(-value[0] > bestValue[0])) {
-							
-							bestValue[0] = -value[0];
-							bestValue[1] = value[1];
-						}
+						movesCompleted -= 1;
+
+						// Cosmetics on the move
+						move.bestMoveY = i;
+						move.bestMoveX = j;
+
+						// Comparing to current best move
+
+						if (move.compareTo(bestMove) == 1)
+							bestMove = move;
 					}
 				}
 			}
-			return bestValue;
+			lastMoveY = tempY;
+			lastMoveX = tempX;
+			activeAgent = tempAgent;
+			return bestMove;
 		}
 	}
 }
