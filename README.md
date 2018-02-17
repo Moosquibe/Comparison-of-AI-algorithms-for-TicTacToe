@@ -21,3 +21,5 @@ Next I will try to speed up the naive recursion by implementing memoization thro
 **2/3/2018** Implemented memoization using a hashmap to avoid having to recompute and now the program can handle a 4x4 board, although not gracefully. Since this is an inefficient baseline algorithm anyway, there is no point in optimizing it further and thus next I will move on to implementing the AlphaBetaPruning.
 
 **2/11/2018** Implemented the alpha-beta pruning algorithm. Unfortunately, the speedup isn't enough to allow for larger boards. In fact, it ended up slower compared to the hashed full tree search. Next time I will implement an evaluation function to be able to limit the search depth.
+
+**2/16/2018** Started cleaning up the code on a separate branch, minmax search is done.
