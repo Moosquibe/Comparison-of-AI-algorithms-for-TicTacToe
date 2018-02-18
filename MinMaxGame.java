@@ -13,12 +13,18 @@ class MinMaxGame extends Game {
 		2 : Computer won
 		3 : Table is full  */
 
+		if (movesCompleted == 0)
+			printTable();
+
+		System.out.println("Thinking...");
+
 		assert activeAgent == 2;
 
 		ValueWithMove move = getBestMove();
 		lastMoveY=move.bestMoveY;
 		lastMoveX=move.bestMoveX;
 	
+		assert table[lastMoveY][lastMoveX] == 0;
 		table[lastMoveY][lastMoveX] = 2;
 		movesCompleted += 1;
 		if (winOnLastMove()) {
@@ -36,9 +42,7 @@ class MinMaxGame extends Game {
 		// Getting best move at a current state of the table.
 		// RETURNS: Value of position and best move realizing that value.
 		//    
-		// NOTE: opponent = 3 - player. The second coordinate is needed so that the 
-		// computer player wants to win as quickly as possible or survive as long 
-		// as it can.
+		// NOTE: opponent = 3 - player. 
 		//
 		// Return the value if the game is over after opponents move.
 		// In this case (-1,-1) for best move in place of null.
@@ -47,7 +51,6 @@ class MinMaxGame extends Game {
 		int tempY = lastMoveY;
 		int tempX = lastMoveX;
 		
-
 		activeAgent = 3 - tempAgent;
 		if (winOnLastMove()) {
 			return new ValueWithMove(-1, movesCompleted, -1, -1);
@@ -61,7 +64,6 @@ class MinMaxGame extends Game {
 			for(int i = 0; i < table.length; i++) {
 				for(int j = 0; j < table[i].length; j++) {
 					if (table[i][j] == 0) {
-
 						// Trying out move (i,j)
 						lastMoveY = i;
 						lastMoveX = j;

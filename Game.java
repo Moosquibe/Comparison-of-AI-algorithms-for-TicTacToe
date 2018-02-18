@@ -41,7 +41,8 @@ abstract class Game {
 			}
 		}
 	}
-	protected class ValueWithMove extends Value {
+
+	public class ValueWithMove extends Value {
 			// Value of a position with the best move out of that position
 			int bestMoveY, bestMoveX;
 
@@ -49,6 +50,12 @@ abstract class Game {
 				super(outcome, lengthOfGame);
 				this.bestMoveY = bestMoveY;
 				this.bestMoveX = bestMoveX;
+			}
+
+			public ValueWithMove(ValueWithMove move) {
+				super(move.outcome, move.lengthOfGame);
+				bestMoveY = move.bestMoveY;
+				bestMoveX = move.bestMoveX;
 			}
 	}
 

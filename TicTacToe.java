@@ -79,10 +79,12 @@ public class TicTacToe {
 							try {
 								charResponse = input.nextLine().charAt(0);
 								if (charResponse == 'Y') {
+									clearScreen();
 									game.restart(true);
 									break;
 								}
 								else if (charResponse == 'N') {
+									clearScreen();
 									game.restart(false);
 									break;
 								}
@@ -98,12 +100,15 @@ public class TicTacToe {
 	}
 	private static void initialize(Scanner input) {
 		/* Initializes game using user input */
-		boolean playerStart;
-		int algorithmUsed;
 		int height, width;
+		int algorithmUsed;
+		boolean playerStart;
+
+		// Get height and width of the board
 		while (true) {
 			clearScreen();
-			System.out.print("Height of the board (" + MIN_HEIGHT + " - " + MAX_HEIGHT + "): ");
+			System.out.print("Height of the board (" + MIN_HEIGHT + 
+											" - " + MAX_HEIGHT + "): ");
 			try {
 				height = Integer.parseInt(input.next());
 				if (MIN_HEIGHT <= height && height <= MAX_HEIGHT)
@@ -114,7 +119,8 @@ public class TicTacToe {
 		}
 		while (true) {
 			clearScreen();
-			System.out.print("Width of the board ("+ MIN_WIDTH + " - " + MAX_WIDTH + "): ");
+			System.out.print("Width of the board ("+ MIN_WIDTH + 
+											" - " + MAX_WIDTH + "): ");
 			try {
 				width = Integer.parseInt(input.next());
 				if (MIN_WIDTH <= height && height <= MAX_WIDTH)
@@ -122,13 +128,14 @@ public class TicTacToe {
 			}
 			catch(NumberFormatException nfe) {}
 		}
+		// Choose the algorithm
 		while (true) {
 			clearScreen();
 			System.out.print("Which algorithm would you like the computer to use?" +
 							"\n\n 1) Minmax search" +
 							"\n 2) Minmax search with memoization" +
-							"\n 3) AlphaBeta pruning" +
-							"\n 4) Learned value function" +
+							"\n 3) AlphaBeta pruning and memoization" +
+							"\n 4) UCT Algorithm" +
 							"\n\nInput (1-4): ");
 			try {
 				algorithmUsed = Integer.parseInt(input.next());
@@ -138,6 +145,8 @@ public class TicTacToe {
 			}
 			catch(NumberFormatException nfe) {}
 		}
+
+		// Get if the player wants to start
 		char playerStartChar;
 		while (true) {
 			clearScreen();
@@ -146,10 +155,12 @@ public class TicTacToe {
 				playerStartChar = input.nextLine().charAt(0);
 				if (playerStartChar == 'Y') {
 					playerStart = true;
+					clearScreen();
 					break;
 				}
 				else if (playerStartChar == 'N') {
 					playerStart = false;
+					clearScreen();
 					break;
 				}
 			}
@@ -160,10 +171,10 @@ public class TicTacToe {
 					break;
 			case 2: game = new MinMaxGameHashed(height, width, playerStart);
 			 		break;
-			// case 3: game = new AlphaBetaGame(height, width, playerStart);
-			// 		break;
-			// case 4: game = new LearnedValueGame(height, width, playerStart);
-			// 		break;
+			case 3: game = new AlphaBetaGame(height, width, playerStart);
+			 		break;
+			case 4: game = new LearnedValueGame(height, width, playerStart);
+			 		break;
 		}
 	}
 	private static void clearScreen() {  
