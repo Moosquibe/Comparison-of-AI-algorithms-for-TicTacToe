@@ -145,7 +145,16 @@ public class TicTacToe {
 			}
 			catch(NumberFormatException nfe) {}
 		}
-
+		switch (algorithmUsed) {
+			case 1: game = new MinMaxGame(height, width, playerStart);
+					break;
+			case 2: game = new MinMaxGameHashed(height, width, playerStart);
+			 		break;
+			case 3: game = new AlphaBetaGame(height, width, playerStart);
+			 		break;
+			case 4: game = new LearnedValueGame(height, width, playerStart);
+			 		break;
+		}
 		// Get if the player wants to start
 		char playerStartChar;
 		while (true) {
@@ -165,16 +174,6 @@ public class TicTacToe {
 				}
 			}
 			catch(RuntimeException e) {}
-		}
-		switch (algorithmUsed) {
-			case 1: game = new MinMaxGame(height, width, playerStart);
-					break;
-			case 2: game = new MinMaxGameHashed(height, width, playerStart);
-			 		break;
-			case 3: game = new AlphaBetaGame(height, width, playerStart);
-			 		break;
-			case 4: game = new LearnedValueGame(height, width, playerStart);
-			 		break;
 		}
 	}
 	private static void clearScreen() {  

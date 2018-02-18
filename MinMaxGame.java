@@ -21,8 +21,8 @@ class MinMaxGame extends Game {
 		assert activeAgent == 2;
 
 		ValueWithMove move = getBestMove();
-		lastMoveY=move.bestMoveY;
-		lastMoveX=move.bestMoveX;
+		lastMoveY = move.bestMoveY;
+		lastMoveX = move.bestMoveX;
 	
 		assert table[lastMoveY][lastMoveX] == 0;
 		table[lastMoveY][lastMoveX] = 2;
@@ -39,13 +39,8 @@ class MinMaxGame extends Game {
 		}
 	}
 	protected ValueWithMove getBestMove() {
-		// Getting best move at a current state of the table.
-		// RETURNS: Value of position and best move realizing that value.
-		//    
-		// NOTE: opponent = 3 - player. 
-		//
-		// Return the value if the game is over after opponents move.
-		// In this case (-1,-1) for best move in place of null.
+		/* Getting best move at a current state of the table.
+		   RETURNS: Value of position and best move realizing that value. */
 
 		int tempAgent = activeAgent;
 		int tempY = lastMoveY;
@@ -79,11 +74,8 @@ class MinMaxGame extends Game {
 						table[i][j] = 0;
 						movesCompleted -= 1;
 
-						// Cosmetics on the move
 						move.bestMoveY = i;
 						move.bestMoveX = j;
-
-						// Comparing to current best move
 
 						if (move.compareTo(bestMove) == 1)
 							bestMove = move;

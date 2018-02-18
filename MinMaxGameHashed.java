@@ -1,42 +1,41 @@
 import java.util.HashMap;
 
 class MinMaxGameHashed extends MinMaxGame {
-	protected HashMap<Integer, int[]> dataBase = new HashMap<Integer, int[]>(1000000);
+	protected HashMap<Integer, int[]> database = new HashMap<Integer, int[]>();
 
 	public MinMaxGameHashed(int height, int width, boolean playersTurn) {
 		super(height, width, playersTurn);
-		dataBase.put(0, null);
+		database.put(0, null);
 	}
 	@Override
 	protected ValueWithMove getBestMove() {
-		// Getting best move at a current state of the table.
-		// RETURNS: Value of position and best move realizing that value.
+		/* Getting best move at a current state of the table.
+		   RETURNS: Value of position and best move realizing that value. */
 
-		
-		// If it was computed before
-		int key = genKey();
-		if (dataBase == null) {
-			dataBase = new HashMap<Integer, int[]>(1000000);
+		if (database == null) {
+			database = new HashMap<Integer, int[]>();
 		}
-		if (dataBase.containsKey(key)) {
-			int[] entry = dataBase.get(key);
+		// If it was computed before, just recall 
+		// the move from the database.
+		int key = genKey();
+		if (database.containsKey(key)) {
+			int[] entry = database.get(key);
 			return new ValueWithMove(entry[0], entry[1], entry[2], entry[3]);
 		}
-
-		// If it needs to be computed
-
+		// If we have not met this situation,
+		// it needs to be computed.
 		int tempAgent = activeAgent;
 		int tempY = lastMoveY;
 		int tempX = lastMoveX;
 		
 		activeAgent = 3 - tempAgent;
 		if (winOnLastMove()) {
-			dataBase.put(key, new int[] {-1, movesCompleted, -1, -1});
+			database.put(key, new int[] {-1, movesCompleted, -1, -1});
 			return new ValueWithMove(-1, movesCompleted, -1, -1);
 		}
 		else if (isFull()) {
 			ValueWithMove bestMove = new ValueWithMove(0, movesCompleted, -1, -1);
-			dataBase.put(key, new int[] {0, movesCompleted, -1, -1});
+			database.put(key, new int[] {0, movesCompleted, -1, -1});
 			return new ValueWithMove(0, movesCompleted, -1, -1);
 		}
 		else {
@@ -61,11 +60,8 @@ class MinMaxGameHashed extends MinMaxGame {
 						table[i][j] = 0;
 						movesCompleted -= 1;
 
-						// Cosmetics on the move
 						move.bestMoveY = i;
 						move.bestMoveX = j;
-
-						// Comparing to current best move
 
 						if (move.compareTo(bestMove) == 1)
 							bestMove = move;
@@ -75,12 +71,16 @@ class MinMaxGameHashed extends MinMaxGame {
 			lastMoveY = tempY;
 			lastMoveX = tempX;
 			activeAgent = tempAgent;
-			dataBase.put(key, new int[] {bestMove.outcome, bestMove.lengthOfGame,
-										bestMove.bestMoveY, bestMove.bestMoveX});
+			database.put(key, 
+						 new int[] {bestMove.outcome, bestMove.lengthOfGame,
+								 	bestMove.bestMoveY, bestMove.bestMoveX});
 			return bestMove;
 		}
 	}
 	protected int genKey() {
+		/* Generates a unique integer based on the state of the game for 
+		   easier hashing. Since all entries are either 0,1,2, this is
+		   essentially a ternary representation. */
 		int temp = 0;
 		for (int i=0; i < table.length; i++)
 			for(int j=0; j < table[i].length; j++)

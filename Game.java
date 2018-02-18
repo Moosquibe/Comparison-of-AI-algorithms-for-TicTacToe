@@ -10,9 +10,12 @@ abstract class Game {
 	protected int movesCompleted;
 
 	protected class Value implements Comparable<Value>{
-		// Represents the values of positions. This is the default implementation,
-		// override if necessary by defining a subclass of it nested in a subclass
-		// of game.
+		/* Represents the values of positions from the viewpoint of the player
+		   whose turn it is. The value of a position is -1 if it leads to 
+		   certain loss, 1 if it leads to certain victory (assuming optimal 
+		   play) and zero if it leads to a tie. This is the default 
+		   implementation, override if necessary by defining a subclass of it 
+		   nested in a subclass of game. */
 
 		int outcome, lengthOfGame;
 
@@ -21,7 +24,7 @@ abstract class Game {
 			this.lengthOfGame = lengthOfGame;
 		}
 		public void flipValue() {
-			outcome = - outcome;
+			outcome = -outcome;
 			lengthOfGame += 1;
 		}
 		public int compareTo(Value other) {
@@ -43,20 +46,20 @@ abstract class Game {
 	}
 
 	public class ValueWithMove extends Value {
-			// Value of a position with the best move out of that position
-			int bestMoveY, bestMoveX;
+		// Value of a position with the best move out of that position
+		int bestMoveY, bestMoveX;
 
-			public ValueWithMove(int outcome, int lengthOfGame, int bestMoveY, int bestMoveX) {
-				super(outcome, lengthOfGame);
-				this.bestMoveY = bestMoveY;
-				this.bestMoveX = bestMoveX;
-			}
+		public ValueWithMove(int outcome, int lengthOfGame, int bestMoveY, int bestMoveX) {
+			super(outcome, lengthOfGame);
+			this.bestMoveY = bestMoveY;
+			this.bestMoveX = bestMoveX;
+		}
 
-			public ValueWithMove(ValueWithMove move) {
-				super(move.outcome, move.lengthOfGame);
-				bestMoveY = move.bestMoveY;
-				bestMoveX = move.bestMoveX;
-			}
+		public ValueWithMove(ValueWithMove move) {
+			super(move.outcome, move.lengthOfGame);
+			bestMoveY = move.bestMoveY;
+			bestMoveX = move.bestMoveX;
+		}
 	}
 
 	public Game(int height, int width, boolean playersTurn) {
@@ -244,12 +247,13 @@ abstract class Game {
 		return true;
 	}
 	public int step(String move) {
-		/*  Human player makes a step followed by the AI making one.
-		Returns:
+		/*  
+		Human player makes a step followed by the AI making one.
+		RETURNS:
 			O: Nobody has won yet
 		   	1: Player won
 		   	2: Computer won 
-		   	3: No more legal moves*/
+		   	3: No more legal moves */
 
 		assert activeAgent == 1;
 

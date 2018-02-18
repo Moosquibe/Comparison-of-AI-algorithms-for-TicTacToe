@@ -8,36 +8,33 @@ class AlphaBetaGame extends MinMaxGameHashed {
 	}
 	@Override
 	protected ValueWithMove getBestMove() {
-		if (dataBase == null) {
-			dataBase = new HashMap<Integer, int[]>(1000000);
+		if (database == null) {
+			database = new HashMap<Integer, int[]>();
 		}
-		// If it was computed before
+		// If it was computed before, just recall 
+		// the move from the database.
 		int key = genKey();
-		if (dataBase.containsKey(key)) {
-			int[] entry = dataBase.get(key);
-			System.out.print("From memoi");
+		if (database.containsKey(key)) {
+			int[] entry = database.get(key);
 			return new ValueWithMove(entry[0], entry[1], entry[2], entry[3]);
 		}
-
-		// If it needs to be computed
+		// If we have not met this situation,
+		// it needs to be computed.
 		ValueWithMove bestMove = alphaBeta(new Value(-1, 0), new Value(1,0));
-		dataBase.put(key, new int[] {bestMove.outcome, bestMove.lengthOfGame,
-									bestMove.bestMoveY, bestMove.bestMoveX});
+		database.put(key, new int[] {bestMove.outcome, bestMove.lengthOfGame,
+									 bestMove.bestMoveY, bestMove.bestMoveX});
 		return bestMove;
 	}
 	protected ValueWithMove alphaBeta(Value alpha, Value beta) { 
-		// Getting best move at a current state of the table.
-		// RETURNS: Value of position and best move realizing that value.
-		//    
-		// NOTE: opponent = 3 - player.
-		//
-		// Return the value if the game is over after opponents move.
-		// In this case (-1,-1) in place of null.
+		/* Getting best move at a current state of the table.
+		   RETURNS: Value of position and best move realizing that value. */
 
 		int tempAgent = activeAgent;
 		int tempY = lastMoveY;
 		int tempX = lastMoveX;
-		
+
+		// winOnLastMove needs the active agent to be the opponent
+		// to work properly.
 		activeAgent = 3 - tempAgent;
 		if (winOnLastMove()) {
 			return new ValueWithMove(-1, movesCompleted, -1, -1);
@@ -54,8 +51,7 @@ class AlphaBetaGame extends MinMaxGameHashed {
 
 			for(int i = 0; i < table.length; i++) {
 				for(int j = 0; j < table[i].length; j++) {
-					if(table[i][j] == 0) {
-						
+					if (table[i][j] == 0) {
 						// Trying move (i,j)
 						lastMoveY = i;
 						lastMoveX = j;
@@ -64,9 +60,10 @@ class AlphaBetaGame extends MinMaxGameHashed {
 						movesCompleted += 1;
 
 						// Evaluating the value of the action
-
-						move = alphaBeta(new Value(-beta.outcome, beta.lengthOfGame),
-										new Value(-bestValue.outcome, bestValue.lengthOfGame));
+						move = alphaBeta(
+								new Value(-beta.outcome, beta.lengthOfGame),
+								new Value(-bestValue.outcome, 
+										  bestValue.lengthOfGame));
 						move.flipValue();
 
 						// Undoing tried move
@@ -74,16 +71,16 @@ class AlphaBetaGame extends MinMaxGameHashed {
 						movesCompleted -= 1;
 
 						// Comparing to current best move
-
 						if (move.compareTo(bestValue) == 1) {
-							bestValue = move; //Upcasting
+							bestValue = move;
 							moveY = i;
 							moveX = j;
 						}
+						// Beta pruning
 						if (bestValue.compareTo(beta) == 1) {
 							return new ValueWithMove(bestValue.outcome,
-													bestValue.lengthOfGame,
-													moveY, moveX);
+													 bestValue.lengthOfGame,
+													 moveY, moveX);
 						}
 					}
 				}
@@ -91,9 +88,8 @@ class AlphaBetaGame extends MinMaxGameHashed {
 			lastMoveY = tempY;
 			lastMoveX = tempX;
 			activeAgent = tempAgent;
-			return new ValueWithMove(bestValue.outcome,
-									bestValue.lengthOfGame,
-									moveY, moveX);
+			return new ValueWithMove(bestValue.outcome, bestValue.lengthOfGame,
+									 moveY, moveX);
 		}
 	}
 }
