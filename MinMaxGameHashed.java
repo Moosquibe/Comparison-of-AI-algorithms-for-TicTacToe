@@ -1,76 +1,90 @@
 import java.util.HashMap;
 
 class MinMaxGameHashed extends MinMaxGame {
-	private HashMap<Integer, int[]> dataBase = new HashMap<Integer, int[]>(1000000);
-	private int starterPlayer;
+	protected HashMap<Integer, int[]> database = new HashMap<Integer, int[]>();
 
 	public MinMaxGameHashed(int height, int width, boolean playersTurn) {
 		super(height, width, playersTurn);
-		if (playersTurn)
-			starterPlayer = 1;
-		else
-			starterPlayer = 2;
+		database.put(0, null);
 	}
-	@override
-	protected int[] getValue(int[][] table, int lastMoveY, int lastMoveX, 
-								int player, int depth) {
-		// Opponent makes move (lastMoveY, lastMoveX) leading to table. 
-		// RETURNS: 
-		//    First entry:  The value of the position for player.
-		//    Second entry: depth + The lenght of the resulting game assuming optimal play.
-		// 
-		// NOTE: opponent = 3 - player. The second coordinate is needed so that the 
-		// computer player wants to win as quickly as possible or survive as long 
-		// as it can.
+	@Override
+	protected ValueWithMove getBestMove() {
+		/* Getting best move at a current state of the table.
+		   RETURNS: Value of position and best move realizing that value. */
 
-		int key = arrayToInt(table);
-		int[] entry = dataBase.get(key);
-		if (entry == null) {
-			boolean lost = (Game.whoWon(table, lastMoveY, lastMoveX, 3-player, lengthToWin) 
-																			== 3-player);
-			if (lost) {
-				int[] value = new int[] {-1, depth};
-				dataBase.put(key, value);
-				return value;
-			}
-			else if (Game.isFull(table)) {
-				int[] value = new int[] {0, depth};
-				dataBase.put(key, value);
-				return value;
-			}
-			else {
-				int[] bestValue = new int[] {-10, depth};
-				int[] value = new int[2];
-				for(int i = 0; i < table.length; i++) {
-					for(int j = 0; j < table[i].length; j++) {
-						if (table[i][j] == 0) {
-							// Trying out move (i,j)
-							table[i][j] = player;
-							value = getValue(table, i, j, 3-player, lengthToWin, depth + 1);
-							table[i][j] = 0;
-							if ((-value[0] == bestValue[0] && bestValue[0] == 1 && 
-															value[1] < bestValue[1]) ||
-								(-value[0] == bestValue[0] && bestValue[0] == -1 && 
-															value[1] > bestValue[1]) ||
-								(-value[0] > bestValue[0])) {
-								
-								bestValue[0] = -value[0];
-								bestValue[1] = value[1];
-							}
-						}
+		if (database == null) {
+			database = new HashMap<Integer, int[]>();
+		}
+		// If it was computed before, just recall 
+		// the move from the database.
+		int key = genKey();
+		if (database.containsKey(key)) {
+			int[] entry = database.get(key);
+			return new ValueWithMove(entry[0], entry[1], entry[2], entry[3]);
+		}
+		// If we have not met this situation,
+		// it needs to be computed.
+		int tempAgent = activeAgent;
+		int tempY = lastMoveY;
+		int tempX = lastMoveX;
+		
+		activeAgent = 3 - tempAgent;
+		if (winOnLastMove()) {
+			database.put(key, new int[] {-1, movesCompleted, -1, -1});
+			return new ValueWithMove(-1, movesCompleted, -1, -1);
+		}
+		else if (isFull()) {
+			ValueWithMove bestMove = new ValueWithMove(0, movesCompleted, -1, -1);
+			database.put(key, new int[] {0, movesCompleted, -1, -1});
+			return new ValueWithMove(0, movesCompleted, -1, -1);
+		}
+		else {
+			ValueWithMove move;
+			ValueWithMove bestMove = new ValueWithMove(-2,0, -1, -1);
+			for(int i = 0; i < table.length; i++) {
+				for(int j = 0; j < table[i].length; j++) {
+					if (table[i][j] == 0) {
+
+						// Trying out move (i,j)
+						lastMoveY = i;
+						lastMoveX = j;
+						table[i][j] = tempAgent;
+						activeAgent = 3 - tempAgent;
+						movesCompleted += 1;
+
+						// Evaluating the value of the action
+						move = getBestMove();
+						move.flipValue();
+
+						// Undoing tried move
+						table[i][j] = 0;
+						movesCompleted -= 1;
+
+						move.bestMoveY = i;
+						move.bestMoveX = j;
+
+						if (move.compareTo(bestMove) == 1)
+							bestMove = move;
 					}
 				}
-				dataBase.put(key, bestValue);
-				return bestValue;
 			}
+			lastMoveY = tempY;
+			lastMoveX = tempX;
+			activeAgent = tempAgent;
+			database.put(key, 
+						 new int[] {bestMove.outcome, bestMove.lengthOfGame,
+								 	bestMove.bestMoveY, bestMove.bestMoveX});
+			return bestMove;
 		}
-		return entry;
 	}
-	private int arrayToInt(int[][] table) {
+	protected int genKey() {
+		/* Generates a unique integer based on the state of the game for 
+		   easier hashing. Since all entries are either 0,1,2, this is
+		   essentially a ternary representation. */
 		int temp = 0;
 		for (int i=0; i < table.length; i++)
 			for(int j=0; j < table[i].length; j++)
 				temp = 3*temp + table[i][j];
-		return temp;
+		return 3*temp+activeAgent;
 	}
 }
