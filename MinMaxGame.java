@@ -2,46 +2,28 @@ import java.util.Scanner;
 
 class MinMaxGame extends Game {
 	// Implements the negamax tree search algorithm.
+	public MinMaxGame(int[] dimsOfBoard, int startingPlayer) {
+		super(dimsOfBoard, startingPlayer);
+	}
+	public class ValueWithMove extends Value {
+		// Value of a position with the best move out of that position
+		int bestMoveY, bestMoveX;
 
-	public MinMaxGame(int height, int width, boolean playersTurn) {
-		super(height, width, playersTurn);
+		public ValueWithMove(int outcome, int lengthOfGame, int bestMoveY, int bestMoveX) {
+			super(outcome, lengthOfGame);
+			this.bestMoveY = bestMoveY;
+			this.bestMoveX = bestMoveX;
+		}
+
+		public ValueWithMove(ValueWithMove move) {
+			super(move.outcome, move.lengthOfGame);
+			bestMoveY = move.bestMoveY;
+			bestMoveX = move.bestMoveX;
+		}
 	}
 	@Override
-	protected int computerMoves() {
-		/* Computer moves. Afterwards returns
-		0 : Nobody won yet
-		2 : Computer won
-		3 : Table is full  */
-
-		if (movesCompleted == 0)
-			printTable();
-
-		System.out.println("Thinking...");
-
-		assert activeAgent == 2;
-
-		ValueWithMove move = getBestMove();
-		lastMoveY = move.bestMoveY;
-		lastMoveX = move.bestMoveX;
-	
-		assert table[lastMoveY][lastMoveX] == 0;
-		table[lastMoveY][lastMoveX] = 2;
-		movesCompleted += 1;
-		if (winOnLastMove()) {
-			scoreBoard[1] += 1;
-			return 2;
-		}
-		else if (isFull())
-			return 3;
-		else {
-			activeAgent = 1;
-			return 0;
-		}
-	}
-	protected ValueWithMove getBestMove() {
-		/* Getting best move at a current state of the table.
-		   RETURNS: Value of position and best move realizing that value. */
-
+	protected Value valueOfMove(int i, int j) {
+		// Returns the value of the move (i,j)
 		int tempAgent = activeAgent;
 		int tempY = lastMoveY;
 		int tempX = lastMoveX;

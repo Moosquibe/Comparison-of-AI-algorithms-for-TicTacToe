@@ -1,5 +1,5 @@
-class LearnedValueGame extends Game {
-	public LearnedValueGame(int height, int width, boolean playersTurn) {
+class UCTGame extends Game {
+	public UCTGame(int height, int width, boolean playersTurn) {
 		super(height, width, playersTurn);
 	}
 
