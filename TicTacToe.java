@@ -17,9 +17,6 @@ public class TicTacToe {
 				move = getPlayersMove();
 				try{
 					game.step(move);
-					// if (stringResponse.length() == 1 && stringResponse.charAt(0) == 'Q')
-					// 	game.gameOn = false;
-					// else if (game.isLegalMove(stringResponse)) {
 				}
 				catch(Exception e) {
 				 	System.out.print(e.getMessage());
@@ -37,15 +34,14 @@ public class TicTacToe {
 		/* Initializes game using user input */
 		int[] dimsOfBoard = getDimsOfBoard();
 		int algorithmUsed = getAlgorithmUsed();
-		int startingPlayer = getstartingPlayer();
-
+		int startingPlayer = getStartingPlayer();
 		switch (algorithmUsed) {
-			case 1: game = new MinMaxGame(dimsOfBoard, startingPlayer);
+			case 1: game = new NegamaxGame(dimsOfBoard, startingPlayer);
 					break;
-			//case 2: game = new MinMaxGameHashed(dimsOfBoard, startingPlayer);
-			// 		break;
-			//case 3: game = new AlphaBetaGame(dimsOfBoard, startingPlayer);
+			case 2: game = new NegamaxGameMemoized(dimsOfBoard, startingPlayer);
 			 		break;
+			//case 3: game = new AlphaBetaGame(dimsOfBoard, startingPlayer);
+			// 		break;
 			//case 4: game = new UCTGame(dimsOfBoard, startingPlayer);
 			// 		break;
 		}
@@ -88,8 +84,8 @@ public class TicTacToe {
 			clearScreen();
 			System.out.print(
 				"Which algorithm would you like the computer to use?" +
-				"\n\n 1) Minmax search" +
-				"\n 2) Minmax search with memoization" +
+				"\n\n 1) Negamax search" +
+				"\n 2) Negamax search with memoization" +
 				"\n 3) AlphaBeta pruning and memoization" +
 				"\n 4) UCT Algorithm" +
 				"\n\nInput (1-4): ");
@@ -120,14 +116,14 @@ public class TicTacToe {
 	}
 	private static String getPlayersMove() {
 		clearScreen();
-		System.out.print(game.boardToString);
+		System.out.print(game.boardToString());
 		System.out.print(game.playerInputMessage);
 		return input.nextLine();
 	}
 	private static void printEndGameMessage() {
 		// Prints message at the end of each game
 		clearScreen();
-		System.out.print(game.boardToString);
+		System.out.print(game.boardToString());
 		switch(game.getGameStatus()) {
 			case 0: break;
 			case 1: System.out.print("\nCongratulations, you won!");
@@ -136,6 +132,7 @@ public class TicTacToe {
 					break;
 			case 3: System.out.print("\nNo more possible moves, it's a tie.");
 					break;
+			default: return;
 		}
 		input.nextLine();
 	}

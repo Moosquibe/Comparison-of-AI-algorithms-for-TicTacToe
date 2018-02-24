@@ -1,7 +1,25 @@
 import java.util.HashMap;
 
-class AlphaBetaGame extends MinMaxGameHashed {
+class AlphaBetaGame extends NegamaxGameMemoized {
 	private int bestMoveY, bestMoveX;
+	// public class ValueWithMove extends Value {
+	// 	// Value of a position with the best move out of that position
+	// 	int bestMoveY, bestMoveX;
+
+	// 	public ValueWithMove(int outcome, int lengthOfGame, 
+	// 						 int bestMoveY, int bestMoveX) {
+	// 		super(outcome, lengthOfGame);
+	// 		this.bestMoveY = bestMoveY;
+	// 		this.bestMoveX = bestMoveX;
+	// 	}
+
+	// 	public ValueWithMove(ValueWithMove move) {
+	// 		super(move.outcome, move.lengthOfGame);
+	// 		bestMoveY = move.bestMoveY;
+	// 		bestMoveX = move.bestMoveX;
+	// 	}
+	// }
+
 
 	public AlphaBetaGame(int height, int width, boolean playersTurn) {
 		super(height, width, playersTurn);

@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 abstract class Game {
 	// Not changing on execution
 	protected String playerInputMessage = "Your move (Q to Quit): ";
@@ -19,16 +17,13 @@ abstract class Game {
 		   play) and zero if it leads to a tie. This is the default 
 		   implementation, override if necessary by defining a subclass of it 
 		   nested in a subclass of game. */
-
 		int outcome, lengthOfGame;
-
 		public Value(int outcome, int lengthOfGame) {
 			this.outcome = outcome;
 			this.lengthOfGame = lengthOfGame;
 		}
 		public void flipValue() {
 			outcome = -outcome;
-			lengthOfGame += 1;
 		}
 		public int compareTo(Value other) {
 			// Winning is better than losing and winning sooner is
@@ -47,25 +42,31 @@ abstract class Game {
 			}
 		}
 	}
+	/////////////////////
+	// Initializiation //
+	/////////////////////
+	public Game() {}
 	public Game(int[] dimsOfBoard, int startingPlayer) {
-		/* Initializes a game on a table of size height X width,
+		/* Initializes a game on a board of size height X width,
 		   where lengthToWin consequtive entries are needed for victory
 		   either horizontally, vertically, or diagonally. If playersTurn
 		   is true then human player starts. */
-
 		scoreBoard = new int[] {0,0};
 		board = new int[dimsOfBoard[0]][dimsOfBoard[1]];
-		// Setting the condition for victory
-		int area = dimsOfBoard[0] * dimsOfBoard[1];
+		lastMove = new int[] {-1, -1};
+		setVictoryCondition();
+		restart(startingPlayer);
+	}
+	protected void setVictoryCondition() {
+		int area = board.length * board[0].length;
 		if (area < 16)
 			lengthToWin = 3;
 		else if (area <=  36)
 			lengthToWin = 4;
 		else
 			lengthToWin = 5;
-		restart(startingPlayer);
 	}
-	public void restart(int startingPlayer) {
+	protected void restart(int startingPlayer) {
 		// Restarts the game
 		gameStatus = 0;
 		movesCompleted = 0;
@@ -77,15 +78,14 @@ abstract class Game {
 	///////////////////
 	// Game dynamics //
 	///////////////////
-	public void step(String move) {
+	public void step(String move) throws Exception {
 		/*  Human player makes a step followed by the AI making one.
-		RETURNS:
-			O: Nobody has won yet
-		   	1: Player won
-		   	2: Computer won 
-		   	3: No more legal moves */
-
+		    Checks for victory */
 		assert activeAgent == 1;
+		if (move.length() == 1 && move.charAt(0) == 'Q') {
+			gameStatus = 4;
+			return;
+		}
 		lastMove = getMove(move);
 		board[lastMove[0]][lastMove[1]] = 1;
 		movesCompleted += 1;
@@ -98,15 +98,14 @@ abstract class Game {
 			gameStatus = 3; // Tie
 		else {
 			// Computer's turn
-			activeAgent == 2;
+			activeAgent = 2;
 			computerMoves(); 
 		}
 	}
 	protected void computerMoves() {
 		/* Computer moves. */
-		System.out.println("Thinking...");
+		//System.out.println("Thinking...");
 		lastMove = getBestMove();
-		assert table[lastMove[0]][lastMove[1]] == 0;
 		
 		board[lastMove[0]][lastMove[1]] = 2;
 		movesCompleted += 1;
@@ -120,25 +119,28 @@ abstract class Game {
 			activeAgent = 1;
 	}
 	protected int[] getBestMove() {
-		/* Getting best move at a current state of the table.  */
-		Value bestValue;
+		/* Getting best move at a current state of the board.  */
+		assert activeAgent == 2;
+		Value bestValue = new Value(-2,0); // Acts as -infty
 		Value newValue;
-		int[] bestMove;
+		int[] bestMove = new int[] {-1,-1};
 		for(int i = 0; i < board.length; i++) {
 			for(int j = 0; j < board[i].length; j++) {
-				if (table[i][j] == 0) {
+				if (board[i][j] == 0) {
 					// Trying out move (i,j)
-					newValue = valueOfMove(i,j);
+					newValue = valueOfMove(i,j, true);
 					if (newValue.compareTo(bestValue) == 1) {
-						bestValue = value;
+						bestValue = newValue;
 						bestMove = new int[] {i, j};
 					}
 				}
 			}
 		}
+		assert bestMove[0] != -1 && bestMove[1] != -1;
+		assert board[bestMove[0]][bestMove[1]] == 0;
 		return bestMove;
 	}
-	protected abstract Value valueOfMove(int i, int j);
+	protected abstract Value valueOfMove(int i, int j, boolean keepLastMove);
 	/* This method will be implemented differently in 
 	   each subclass according to the algorithm to use.*/
 
@@ -150,14 +152,14 @@ abstract class Game {
 		// 1. Check if a win was triggered vertically
 		int count = 1;
 		int currentY = lastMove[0] + 1;
-		while (currentY < table.length && 
-			   table[currentY][lastMove[1]] == activeAgent) {
+		while (currentY < board.length && 
+			   board[currentY][lastMove[1]] == activeAgent) {
 			count++;
 			currentY++;
 		}
 		currentY = lastMove[0] - 1;
 		while (currentY >= 0 && 
-			   table[currentY][lastMove[1]] == activeAgent) {
+			   board[currentY][lastMove[1]] == activeAgent) {
 			count++;
 			currentY--;
 		}
@@ -167,14 +169,14 @@ abstract class Game {
 		// 2. Check the if a win was triggered horizontally
 		count = 1;
 		int currentX = lastMove[1] + 1;
-		while (currentX < table[0].length && 
-			   table[lastMove[0]][currentX] == activeAgent) {
+		while (currentX < board[0].length && 
+			   board[lastMove[0]][currentX] == activeAgent) {
 			count++;
 			currentX++;
 		}
 		currentX = lastMove[1] - 1;
 		while (currentX >= 0 && 
-			   table[lastMove[0]][currentX] == activeAgent) {
+			   board[lastMove[0]][currentX] == activeAgent) {
 			count++;
 			currentX--;
 		}
@@ -185,8 +187,8 @@ abstract class Game {
 		count = 1;
 		currentY = lastMove[0] + 1;
 		currentX = lastMove[1] + 1;
-		while (currentY < table.length && currentX < table[0].length && 
-					table[currentY][currentX] == activeAgent) {
+		while (currentY < board.length && currentX < board[0].length && 
+					board[currentY][currentX] == activeAgent) {
 			count++;
 			currentY++;
 			currentX++;
@@ -194,7 +196,7 @@ abstract class Game {
 		currentY = lastMove[0] - 1;
 		currentX = lastMove[1] - 1;
 		while (currentY >= 0 &&  currentX >= 0 &&
-					table[currentY][currentX] == activeAgent) {
+					board[currentY][currentX] == activeAgent) {
 			count++;
 			currentY--;
 			currentX--;
@@ -206,16 +208,16 @@ abstract class Game {
 		count = 1;
 		currentY = lastMove[0] - 1;
 		currentX = lastMove[1] + 1;
-		while (currentY >= 0 && currentX < table[0].length && 
-					table[currentY][currentX] == activeAgent) {
+		while (currentY >= 0 && currentX < board[0].length && 
+					board[currentY][currentX] == activeAgent) {
 			count++;
 			currentY--;
 			currentX++;
 		}
 		currentY = lastMove[0] + 1;
 		currentX = lastMove[1] - 1;
-		while (currentY < table.length &&  currentX >= 0 &&
-					table[currentY][currentX] == activeAgent) {
+		while (currentY < board.length &&  currentX >= 0 &&
+					board[currentY][currentX] == activeAgent) {
 			count++;
 			currentY++;
 			currentX--;
@@ -226,10 +228,10 @@ abstract class Game {
 		return false;
 	}
 	protected boolean isFull(){
-		// Check whether there are no moves left in table
-		for(int i = 0; i < table.length; i++){
-			for(int j = 0; j < table[i].length; j++) {
-				if (table[i][j] == 0)
+		// Check whether there are no moves left in board
+		for(int i = 0; i < board.length; i++){
+			for(int j = 0; j < board[i].length; j++) {
+				if (board[i][j] == 0)
 					return false;
 			}
 		}
@@ -242,9 +244,11 @@ abstract class Game {
 		return gameStatus;
 	}
 	public String boardToString() {
+		int height = board.length;
+		int width = board[0].length;
 		// Displays the current standing of the board
 		String output = "Player(X): " + scoreBoard[0] + " Computer (O): " + 
-							scoreBoard[1] + "\n\n ");
+							scoreBoard[1] + "\n\n ";
 		for(int i = 0; i < width; i++) {
 			output += String.format( "|% 3d",i+1);
 		}
@@ -255,7 +259,7 @@ abstract class Game {
 		for(int i = 0; i < height; i++) {
 			output += "\n" + (char)(65 + i) + "|";
 			for(int j = 0; j < width; j++) {
-				switch(table[i][j]) {
+				switch(board[i][j]) {
 					case 0: output += "|   ";
 							break;
 					case 1: output += "| X ";
@@ -266,36 +270,39 @@ abstract class Game {
 			}
 			output += "|";
 		}
-		output += "\n\nGoal: Get " + lengthToWin + " in a row.\n\n");
+		output += "\n\nGoal: Get " + lengthToWin + " in a row.\n\n";
 		return output;
 	}
 	////////////////////
 	// Helper methods //
 	////////////////////
 	protected void clearBoard() {
-		// Put empty values to table
+		// Put empty values to board
+		int height = board.length;
+		int width = board[0].length;
 		for(int i = 0; i < height; i++) {
 			for(int j = 0; j < width; j++) {
-				table[i][j] = 0;
+				board[i][j] = 0;
 			}
 		}
 	}
 	protected int[] getMove(String move) throws Exception {
 		// Returns the coordinate
+		int height = board.length;
+		int width = board[0].length;
 		try {
-			int moveHeight = Integer.parseInt(move.substring(0,1));
+			int moveHeight = ((int)move.charAt(0)) - 65;
 			int moveWidth = Integer.parseInt(move.substring(1,move.length()))-1;
 			if (moveHeight < 0 || moveHeight > (height - 1)) 
 				throw new Exception("\n\nIllegal input!");
 			if (moveWidth < 0 || moveWidth > width - 1) 
 				throw new Exception("\n\nIllegal input!");
-			if (table[moveHeight][moveWidth] != 0)
+			if (board[moveHeight][moveWidth] != 0)
 				throw new Exception("\n\nField is already taken!");
+			return new int[] {moveHeight, moveWidth};
 		}
-		catch (NumberFormatException e) {
+		catch (NumberFormatException | StringIndexOutOfBoundsException e) {
 			throw new Exception("\n\nIllegal input!");
 		}
-		return new int[] {moveHeight, moveWidth};
 	}
 }
-
