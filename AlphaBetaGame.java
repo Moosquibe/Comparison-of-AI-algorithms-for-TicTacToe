@@ -27,8 +27,6 @@ class AlphaBetaGame extends NegamaxGameMemoized {
 		// Make the move
 		lastMove[0] = k;
 		lastMove[1] = l;
-		//System.out.print(boardToString());
-		//(new Scanner(System.in)).nextLine();
 		board[k][l] = activeAgent;
 		movesCompleted += 1;
 		// Evaluate the move
