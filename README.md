@@ -23,3 +23,5 @@ Next I will try to speed up the naive recursion by implementing memoization thro
 **2/11/2018** Implemented the alpha-beta pruning algorithm. Unfortunately, the speedup isn't enough to allow for larger boards. In fact, it ended up slower compared to the hashed full tree search. Next time I will implement an evaluation function to be able to limit the search depth.
 
 **2/16/2018** Started cleaning up the code on a separate branch, minmax search is done.
+
+**2/24/2018** Finished cleaning up the code so far. Next I will either implement some heuristic evaluation function or get rigth to the UCT.
