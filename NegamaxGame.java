@@ -1,5 +1,3 @@
-import java.util.Scanner;
-
 class NegamaxGame extends Game {
 	int[] savedLastMove;
 	// Implements the negamax tree search algorithm.
@@ -17,13 +15,13 @@ class NegamaxGame extends Game {
 		   and restored in the end.*/
 		if (keepLastMove) 
 			savedLastMove = lastMove.clone();
-		Value value;  // Acts as -infty
 		// Make the move
 		lastMove[0] = k;
 		lastMove[1] = l;
 		board[k][l] = activeAgent;
 		movesCompleted += 1;
 		// Evaluate the move
+		Value value;
 		if (winOnLastMove()) {
 			value = new Value(1, movesCompleted);
 		}

@@ -15,10 +15,12 @@ class NegamaxGameMemoized extends NegamaxGame {
 	@Override
 	protected Value valueOfMove(int k, int l, boolean keepLastMove) {
 		int key = genKey(k,l);
+		// If it was computed before, just recall the move from the database.
 		if (database.containsKey(key)) {
 			int[] entry = database.get(key);
 			return new Value(entry[0], entry[1]);
 		}
+		// If we have not met this situation, it needs to be computed.
 		Value value = super.valueOfMove(k,l, keepLastMove);
 		database.put(key, new int[] {value.outcome, value.lengthOfGame});
 		return value;

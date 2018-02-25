@@ -1,113 +1,76 @@
-import java.util.HashMap;
+import java.util.Scanner;
 
 class AlphaBetaGame extends NegamaxGameMemoized {
-	private int bestMoveY, bestMoveX;
-	// public class ValueWithMove extends Value {
-	// 	// Value of a position with the best move out of that position
-	// 	int bestMoveY, bestMoveX;
-
-	// 	public ValueWithMove(int outcome, int lengthOfGame, 
-	// 						 int bestMoveY, int bestMoveX) {
-	// 		super(outcome, lengthOfGame);
-	// 		this.bestMoveY = bestMoveY;
-	// 		this.bestMoveX = bestMoveX;
-	// 	}
-
-	// 	public ValueWithMove(ValueWithMove move) {
-	// 		super(move.outcome, move.lengthOfGame);
-	// 		bestMoveY = move.bestMoveY;
-	// 		bestMoveX = move.bestMoveX;
-	// 	}
-	// }
-
-
-	public AlphaBetaGame(int height, int width, boolean playersTurn) {
-		super(height, width, playersTurn);
+	public AlphaBetaGame(int[] dimsOfBoard, int startingPlayer) {
+		super(dimsOfBoard, startingPlayer);
 	}
 	@Override
-	protected ValueWithMove getBestMove() {
-		if (database == null) {
-			database = new HashMap<Integer, int[]>();
-		}
-		// If it was computed before, just recall 
-		// the move from the database.
-		int key = genKey();
+	protected Value valueOfMove(int k, int l, boolean keepLastMove) {
+		int key = genKey(k,l);
+		// If it was computed before, just recall the move from the database.
 		if (database.containsKey(key)) {
 			int[] entry = database.get(key);
-			return new ValueWithMove(entry[0], entry[1], entry[2], entry[3]);
+			return new Value(entry[0], entry[1]);
 		}
-		// If we have not met this situation,
-		// it needs to be computed.
-		ValueWithMove bestMove = alphaBeta(new Value(-1, 0), new Value(1,0));
-		database.put(key, new int[] {bestMove.outcome, bestMove.lengthOfGame,
-									 bestMove.bestMoveY, bestMove.bestMoveX});
-		return bestMove;
+		// If we have not met this situation, it needs to be computed.
+		Value alpha = new Value(-2, 0);
+		Value beta = new Value(2,0);
+		Value value = alphaBeta(k, l, alpha, beta, keepLastMove);
+		database.put(key, new int[] {value.outcome, value.lengthOfGame});
+		return value;
 	}
-	protected ValueWithMove alphaBeta(Value alpha, Value beta) { 
-		/* Getting best move at a current state of the table.
-		   RETURNS: Value of position and best move realizing that value. */
-
-		int tempAgent = activeAgent;
-		int tempY = lastMoveY;
-		int tempX = lastMoveX;
-
-		// winOnLastMove needs the active agent to be the opponent
-		// to work properly.
-		activeAgent = 3 - tempAgent;
+	protected Value alphaBeta(int k, int l, Value alpha, Value beta, 
+							  boolean keepLastMove) { 
+		/* Getting best move at a current state of the table.*/
+		if (keepLastMove) 
+			savedLastMove = lastMove.clone();
+		// Make the move
+		lastMove[0] = k;
+		lastMove[1] = l;
+		//System.out.print(boardToString());
+		//(new Scanner(System.in)).nextLine();
+		board[k][l] = activeAgent;
+		movesCompleted += 1;
+		// Evaluate the move
+		Value value;
 		if (winOnLastMove()) {
-			return new ValueWithMove(-1, movesCompleted, -1, -1);
+			value = new Value(1, movesCompleted);
 		}
 		else if (isFull()) {
-			return new ValueWithMove(0, movesCompleted, -1, -1);
+			value = new Value(0, movesCompleted);
 		}
 		else {
-			Value bestValue = alpha;
-			ValueWithMove move;
-
-			int moveY = 0;
-			int moveX = 0;
-
-			for(int i = 0; i < table.length; i++) {
-				for(int j = 0; j < table[i].length; j++) {
-					if (table[i][j] == 0) {
-						// Trying move (i,j)
-						lastMoveY = i;
-						lastMoveX = j;
-						table[i][j] = tempAgent;
-						activeAgent = 3 - tempAgent;
-						movesCompleted += 1;
-
-						// Evaluating the value of the action
-						move = alphaBeta(
-								new Value(-beta.outcome, beta.lengthOfGame),
-								new Value(-bestValue.outcome, 
-										  bestValue.lengthOfGame));
-						move.flipValue();
-
-						// Undoing tried move
-						table[i][j] = 0;
-						movesCompleted -= 1;
-
-						// Comparing to current best move
-						if (move.compareTo(bestValue) == 1) {
-							bestValue = move;
-							moveY = i;
-							moveX = j;
-						}
+			// Recursively evaluate move (i,j) for opponent and
+			// find the best one from his/her perspective
+			activeAgent = 3 - activeAgent;
+			value = alpha; 
+			Value tempValue;
+			Value newAlpha = new Value(-beta.outcome, beta.lengthOfGame);
+			Value newBeta = new Value(-value.outcome, value.lengthOfGame);
+			for(int i = 0; i < board.length; i++) {
+				for(int j = 0; j < board[i].length; j++) {
+					if (board[i][j] == 0) {
+						tempValue = alphaBeta(i, j, newAlpha, newBeta, false);
+						if (tempValue.compareTo(value) == 1) 
+							value = tempValue;
 						// Beta pruning
-						if (bestValue.compareTo(beta) == 1) {
-							return new ValueWithMove(bestValue.outcome,
-													 bestValue.lengthOfGame,
-													 moveY, moveX);
-						}
+						if (value.compareTo(beta) == 1)
+							break;
 					}
 				}
+				if (value.compareTo(beta) == 1)
+					break;
 			}
-			lastMoveY = tempY;
-			lastMoveX = tempX;
-			activeAgent = tempAgent;
-			return new ValueWithMove(bestValue.outcome, bestValue.lengthOfGame,
-									 moveY, moveX);
+			activeAgent = 3 - activeAgent;
+			// The value of the position is the negative of the best value
+			// for the opponent.
+			value.flipValue();
 		}
+		// Undo the move
+		if (keepLastMove)
+			lastMove = savedLastMove;
+		board[k][l] = 0;
+		movesCompleted -= 1;
+		return value;
 	}
 }

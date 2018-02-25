@@ -40,8 +40,8 @@ public class TicTacToe {
 					break;
 			case 2: game = new NegamaxGameMemoized(dimsOfBoard, startingPlayer);
 			 		break;
-			//case 3: game = new AlphaBetaGame(dimsOfBoard, startingPlayer);
-			// 		break;
+			case 3: game = new AlphaBetaGame(dimsOfBoard, startingPlayer);
+			 		break;
 			//case 4: game = new UCTGame(dimsOfBoard, startingPlayer);
 			// 		break;
 		}
