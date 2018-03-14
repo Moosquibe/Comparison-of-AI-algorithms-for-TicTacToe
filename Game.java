@@ -61,7 +61,7 @@ abstract class Game {
 		int area = board.length * board[0].length;
 		if (area < 16)
 			lengthToWin = 3;
-		else if (area <=  36)
+		else if (area <  36)
 			lengthToWin = 4;
 		else
 			lengthToWin = 5;
@@ -148,6 +148,10 @@ abstract class Game {
 	// Endcondition checking //
 	///////////////////////////
 	protected boolean winOnLastMove() {
+		return Game.winOnLastMove(board, lastMove, lengthToWin, activeAgent);
+	}
+	public static boolean winOnLastMove(int[][] board, int[] lastMove,
+										int lengthToWin, int activeAgent){
 		// Checks if the last move triggers a win
 		// 1. Check if a win was triggered vertically
 		int count = 1;
@@ -227,7 +231,11 @@ abstract class Game {
 		}
 		return false;
 	}
-	protected boolean isFull(){
+
+	protected boolean isFull() {
+		return Game.isFull(board);
+	}
+	public static boolean isFull(int[][] board) {
 		// Check whether there are no moves left in board
 		for(int i = 0; i < board.length; i++){
 			for(int j = 0; j < board[i].length; j++) {

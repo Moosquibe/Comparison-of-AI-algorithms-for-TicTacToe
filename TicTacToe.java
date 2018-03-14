@@ -19,7 +19,7 @@ public class TicTacToe {
 					game.step(move);
 				}
 				catch(Exception e) {
-				 	System.out.print(e.getMessage());
+				 	e.printStackTrace();
 				 	input.nextLine();
 				}
 			}
@@ -42,8 +42,8 @@ public class TicTacToe {
 			 		break;
 			case 3: game = new AlphaBetaGame(dimsOfBoard, startingPlayer);
 			 		break;
-			//case 4: game = new UCTGame(dimsOfBoard, startingPlayer);
-			// 		break;
+			case 4: game = new UCTGame(dimsOfBoard, startingPlayer);
+					break;
 		}
 	}
 	////////////////////////
