@@ -24,3 +24,8 @@ Next I will try to speed up the naive recursion by implementing memoization thro
 **2/16/2018** Started cleaning up the code on a separate branch, minmax search is done.
 
 **2/24/2018** Finished cleaning up the code so far. Next I will either implement some heuristic evaluation function or get rigth to the UCT.
+
+**3/14/2018** Implemented UCT, and sometimes it plays pleasant but other times inexplicably dumb (surely buggy). For example:
+
+- it should always be able to detect imminent victories as the game tree should be fully expanded one level deep.
+- it should aways be able to detect imminent loss as the game tree should be expanded two levels deep unless the board is too big.
