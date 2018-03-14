@@ -1,7 +1,6 @@
-# Comparison of AI algorithms for TicTacToe
-This repository contains my implementations to the algorithms covered in the Parallel Curricula of the [Mathematics of Deep Learning](https://joanbruna.github.io/MathsDL-spring18/) class in the Spring semester of 2018 taught by Joan Bruna with Cinjon Resnick as TA. The main goal of the semester is to understand [Alpha Go](https://deepmind.com/research/alphago/).
+# Implementation of a couple of  AI algorithms for TicTacToe
 
-I am currently working on implementing a simple generalized Tic-Tac-Toe game on a board of arbitrary size (so that there are relatively small amount of implementation details) using (1) Evolutionary algorithms: (a) Brute Force Minmax search of the game tree; (b) Alpha-Beta Pruning of the game tree; (2) Reinforcement learning based on a learned value function. Eventually, I want to use a neural network to learn this value function by having my program battle my friends. The main file is TicTacToe.java.
+I am currently working on implementing a simple generalized Tic-Tac-Toe game on a board of arbitrary size (so that there are relatively small amount of implementation details) using (1) Evolutionary algorithms: (a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree; (b) Alpha-Beta Pruning of the game tree; (2) Reinforcement learning based on a learned value function. Eventually, I want to use a neural network to learn this value function by having my program battle my friends. The main file is TicTacToe.java.
 
 
 Mini-Diary: 
@@ -23,3 +22,10 @@ Next I will try to speed up the naive recursion by implementing memoization thro
 **2/11/2018** Implemented the alpha-beta pruning algorithm. Unfortunately, the speedup isn't enough to allow for larger boards. In fact, it ended up slower compared to the hashed full tree search. Next time I will implement an evaluation function to be able to limit the search depth.
 
 **2/16/2018** Started cleaning up the code on a separate branch, minmax search is done.
+
+**2/24/2018** Finished cleaning up the code so far. Next I will either implement some heuristic evaluation function or get rigth to the UCT.
+
+**3/14/2018** Implemented UCT, and sometimes it plays pleasant but other times inexplicably dumb (surely buggy). For example:
+
+- it should always be able to detect imminent victories as the game tree should be fully expanded one level deep.
+- it should aways be able to detect imminent loss as the game tree should be expanded two levels deep unless the board is too big.
