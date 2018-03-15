@@ -12,14 +12,14 @@ $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
 
 > (You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-                   mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
           
-      (b) [Alpha-Beta Pruning](https://www.cs.cmu.edu/~arielpro/mfai_papers/lecture1.pdf) of the game tree. This approach               prunes the search tree and discards parts of it that are clearly suboptimal.
+> (b) [Alpha-Beta Pruning](https://www.cs.cmu.edu/~arielpro/mfai_papers/lecture1.pdf) of the game tree. This approach               prunes the search tree and discards parts of it that are clearly suboptimal.
       
 (2) Reinforcement learning:
 
-      (a) [Upper Confidence Bound for Trees (UCT)](https://gnunet.org/sites/default/files/Browne%20et%20al%20-      %20A%20survey%20of%20MCTS%20methods.pdf) This is a Monte Carlo Search Tree (MCTS) algorithm with UCB1 as tree-policy and                  uniformly random moves as the default policy. The computation budget is regulated by the number of Monte Carlo                rollouts allowed per move. We retain part of the search tree corresponding to the actual moves. This algorithm can            handle larger board sizes, however, due to the random nature of the rollout, the computer seemingly plays random on            these boards, however, it does keep the player from winning in one move (if it can) and recognizes if it can win in            one move as well.
+> (a) [Upper Confidence Bound for Trees (UCT)](https://gnunet.org/sites/default/files/Browne%20et%20al%20-      %20A%20survey%20of%20MCTS%20methods.pdf) This is a Monte Carlo Search Tree (MCTS) algorithm with UCB1 as tree-policy and                  uniformly random moves as the default policy. The computation budget is regulated by the number of Monte Carlo                rollouts allowed per move. We retain part of the search tree corresponding to the actual moves. This algorithm can            handle larger board sizes, however, due to the random nature of the rollout, the computer seemingly plays random on            these boards, however, it does keep the player from winning in one move (if it can) and recognizes if it can win in            one move as well.
       
       
-The main file is TicTacToe.java.
+The main file is [TicTacToe.java](https://github.com/Moosquibe/Comparison-of-AI-algorithms-for-TicTacToe/blob/master/TicTacToe.java).
 
 
 Mini-Diary: 
