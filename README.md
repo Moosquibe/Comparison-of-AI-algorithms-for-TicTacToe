@@ -4,13 +4,13 @@ I implemented a simple generalized Tic-Tac-Toe game on a board of arbitrary size
 
 (1) Evolutionary algorithms: These direct methods were only able to handle boards of maximum size 4x4. (The memoized versions)
 
-      (a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree also with memoization. Thus the           total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-             Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
+>(a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree also with memoization. Thus the           total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-             Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
 
-         $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
+$$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
 
-          Here just the largest term is $16! = 20922789888000 \approx 2 * 10^{13}$ for a 4x4 board. Thankfully for a 3x3                 board, it is only $9! = 362880\approx 3.5 * 10^5$. Big difference.
+> Here just the largest term is $16! = 20922789888000 \approx 2 * 10^{13}$ for a 4x4 board. Thankfully for a 3x3                 board, it is only $9! = 362880\approx 3.5 * 10^5$. Big difference.
 
-          (You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-                   mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
+> (You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-                   mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
           
       (b) [Alpha-Beta Pruning](https://www.cs.cmu.edu/~arielpro/mfai_papers/lecture1.pdf) of the game tree. This approach               prunes the search tree and discards parts of it that are clearly suboptimal.
       
