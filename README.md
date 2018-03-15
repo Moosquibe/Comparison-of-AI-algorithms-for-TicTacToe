@@ -1,6 +1,25 @@
 # Implementation of a couple of  AI algorithms for TicTacToe
 
-I am currently working on implementing a simple generalized Tic-Tac-Toe game on a board of arbitrary size (so that there are relatively small amount of implementation details) using (1) Evolutionary algorithms: (a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree; (b) Alpha-Beta Pruning of the game tree; (2) Reinforcement learning based on a learned value function. Eventually, I want to use a neural network to learn this value function by having my program battle my friends. The main file is TicTacToe.java.
+I implemented a simple generalized Tic-Tac-Toe game on a board of arbitrary size (so that there are relatively small amount of implementation details) using the following algorithms.
+
+(1) Evolutionary algorithms: These direct methods were only able to handle boards of maximum size 4x4. (The memoized versions)
+
+      (a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree also with memoization. Thus the           total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-             Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
+
+         $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
+
+          Here just the largest term is $16! = 20922789888000 \approx 2 * 10^{13}$ for a 4x4 board. Thankfully for a 3x3                 board, it is only $9! = 362880\approx 3.5 * 10^5$. Big difference.
+
+          (You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-                   mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
+          
+      (b) [Alpha-Beta Pruning](https://www.cs.cmu.edu/~arielpro/mfai_papers/lecture1.pdf) of the game tree. This approach               prunes the search tree and discards parts of it that are clearly suboptimal.
+      
+(2) Reinforcement learning:
+
+      (a) [Upper Confidence Bound for Trees (UCT)](https://gnunet.org/sites/default/files/Browne%20et%20al%20-      %20A%20survey%20of%20MCTS%20methods.pdf) This is a Monte Carlo Search Tree (MCTS) algorithm with UCB1 as tree-policy and                  uniformly random moves as the default policy. The computation budget is regulated by the number of Monte Carlo                rollouts allowed per move. We retain part of the search tree corresponding to the actual moves. This algorithm can            handle larger board sizes, however, due to the random nature of the rollout, the computer seemingly plays random on            these boards, however, it does keep the player from winning in one move (if it can) and recognizes if it can win in            one move as well.
+      
+      
+The main file is TicTacToe.java.
 
 
 Mini-Diary: 
