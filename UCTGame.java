@@ -225,7 +225,6 @@ class UCTGame extends Game {
 	final long MAX_SIMULATIONS = 100000; //Long.MAX_VALUE; // Max UCT iterations in one move.
 	final double CP = 0.70710678118654746;
 	Node root;
-
 	private int[] UCTSearch() {
 		/* If this is the first search then root is null. Otherwise it is the 
 		child of the root of the previous search tree corresponding to the
