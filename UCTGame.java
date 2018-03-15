@@ -174,6 +174,17 @@ class UCTGame extends Game {
 		public void setParent(Node parent) {
 			this.parent = parent;
 		}
+		public Node getChild(int[] move) {
+			/* Finds the child corresponding to move or returns null */
+			if (children == null)
+				return null;
+			for (Object obj : children) {
+				Node child = (Node)obj;
+				if (Arrays.equals(child.lastMove, move))
+					return child;
+			}
+			return null;
+		}
 		/////////////
 		// Helpers //
 		/////////////
@@ -213,9 +224,23 @@ class UCTGame extends Game {
 	//////////////////////////
 	final long MAX_SIMULATIONS = 100000; //Long.MAX_VALUE; // Max UCT iterations in one move.
 	final double CP = 0.70710678118654746;
+	Node root;
 
 	private int[] UCTSearch() {
-		Node root = new Node(board, null, null, activeAgent);
+		/* If this is the first search then root is null. Otherwise it is the 
+		child of the root of the previous search tree corresponding to the
+		move actually taken */
+		if (root == null)
+			root = new Node(board, null, null, activeAgent);
+		else {
+			/* Need to extract the subtree corresponding to the move of the
+			human player */
+			root = root.getChild(lastMove);
+			if (root == null)
+				root = new Node(board, null, null, activeAgent);
+			else
+				root.setParent(null); // Discard the rest of the tree
+		}
 		int simulations = 0;
 
 		while (simulations <= MAX_SIMULATIONS) {
@@ -230,7 +255,10 @@ class UCTGame extends Game {
 			}
 			simulations++;
 		}
-		return root.getBestChild(0).lastMove;
+		// Change root by the selected move
+		root = root.getBestChild(0);
+		root.setParent(null); // Discard the rest of the tree
+		return root.lastMove;
 	}
 	private Node treePolicy(Node root) {
 		/* Uses UCB to search the tree for best leaf.*/
@@ -251,8 +279,7 @@ class UCTGame extends Game {
 		   	Tie: 0
 		   	Victory for leaf activeAgent: maxMoves - movesAtEnd + 1 
 		   	Loss for leaf activeAgent: -maxMoves + movesAtEnd - 1
-		Then normalize to [0, 1]*/
-
+		Then possibly normalize to [0, 1]*/
 		Node currentNode = leaf;
 		// Random rollout
 		while(!currentNode.isTerminal()) {
