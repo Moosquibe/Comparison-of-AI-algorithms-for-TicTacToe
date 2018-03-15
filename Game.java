@@ -4,6 +4,7 @@ abstract class Game {
 	protected int[][] board;
 	protected int[] scoreBoard;
 	protected int lengthToWin;
+	protected int areaOfBoard;
 	// Changing on execution
 	protected int[] lastMove;
 	protected int activeAgent;
@@ -53,6 +54,7 @@ abstract class Game {
 		   is true then human player starts. */
 		scoreBoard = new int[] {0,0};
 		board = new int[dimsOfBoard[0]][dimsOfBoard[1]];
+		areaOfBoard = dimsOfBoard[0] * dimsOfBoard[1];
 		lastMove = new int[] {-1, -1};
 		setVictoryCondition();
 		restart(startingPlayer);
@@ -252,6 +254,10 @@ abstract class Game {
 		return gameStatus;
 	}
 	public String boardToString() {
+		return Game.boardToString(board, scoreBoard, lengthToWin);
+	}
+	public static String boardToString(int[][] board, int[] scoreBoard,
+									   int lengthToWin) {
 		int height = board.length;
 		int width = board[0].length;
 		// Displays the current standing of the board
