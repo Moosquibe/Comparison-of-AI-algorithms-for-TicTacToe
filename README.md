@@ -22,7 +22,7 @@ $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
 The main file is [TicTacToe.java](https://github.com/Moosquibe/Comparison-of-AI-algorithms-for-TicTacToe/blob/master/TicTacToe.java).
 
 <p align="center">
-![Screenshot of Game](https://github.com/Moosquibe/Comparison-of-AI-algorithms-for-TicTacToe/blob/master/Screenshot.png)
+<img https://github.com/Moosquibe/Comparison-of-AI-algorithms-for-TicTacToe/blob/master/Screenshot.png >
 </p>
 
 Further improvements possible:
