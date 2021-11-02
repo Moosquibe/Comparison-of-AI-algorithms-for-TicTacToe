@@ -4,7 +4,7 @@ I implemented a simple generalized Tic-Tac-Toe game on a board of arbitrary size
 
 (1) Evolutionary algorithms: These direct methods were only able to handle boards of maximum size 4x4. (The memoized versions)
 
->(a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree also with memoization. Thus the           total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-             Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
+>(a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree also with memoization. The search space for the $k$th move is $(n+1-k)!$ large, where $n$ stands for the area of the board and thus the total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
 
 $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
 
@@ -21,16 +21,17 @@ $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
       
 The main file is [TicTacToe.java](https://github.com/Moosquibe/Comparison-of-AI-algorithms-for-TicTacToe/blob/master/TicTacToe.java).
 
+<p align="center">
+<img src="https://github.com/Moosquibe/Comparison-of-AI-algorithms-for-TicTacToe/blob/master/Screenshot.png"/ >
+</p>
+
+Further improvements possible:
+- Implement a handcrafted value function approximator to guide the tree search with immediate rewards not just terminal ones.
+- Perhaps do this value function approximator using a neural network as in AlphaGoZero.
 
 Mini-Diary: 
 
-**2/1/2018**: The naive minmax search is working. As expected, it is terribly inefficient and cannot handle larger than a 3x4 board. This is not surprising at all as the search space for the $k$th move is $(n+1-k)!$ large, where $n$ stands for the area of the board. Thus the total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
-
-$$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
-
-Here just the largest term is $16! = 20922789888000 \approx 2 * 10^{13}$ for a 4x4 board. Thankfully for a 3x3 board, it is only $9! = 362880\approx 3.5 * 10^5$. Big difference.
-
-(You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
+**2/1/2018**: The naive minmax search is working. As expected, it is terribly inefficient and cannot handle larger than a 3x4 board. 
 
 Next I will try to speed up the naive recursion by implementing memoization through hashing the already evaluated game configurations so that no reexploration is necessary and see what kind of speed-up I can get.
 
@@ -48,3 +49,7 @@ Next I will try to speed up the naive recursion by implementing memoization thro
 
 - it should always be able to detect imminent victories as the game tree should be fully expanded one level deep.
 - it should aways be able to detect imminent loss as the game tree should be expanded two levels deep unless the board is too big.
+
+**3/15/2018** Fixed the previous bug, now the game plays nice, stops you from winning immediately. However, on larger boards the variance of the tree search is way too big and the computer seemingly plays randomly for most of the time.
+
+I stop here for now, but given lots of free time (which virtually never happens), I might return to implement the neural network approach.
