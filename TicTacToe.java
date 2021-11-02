@@ -19,7 +19,8 @@ public class TicTacToe {
 					game.step(move);
 				}
 				catch(Exception e) {
-				 	e.printStackTrace();
+					System.out.println(e.getMessage());
+				 	//e.printStackTrace();
 				 	input.nextLine();
 				}
 			}

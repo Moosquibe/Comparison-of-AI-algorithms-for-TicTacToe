@@ -247,11 +247,11 @@ class UCTGame extends Game {
 			double reward = defaultPolicy(leaf);
 			leaf.backup(reward);
 			// Stop search if tree has been exhausted.
-			if (leaf.isTerminal()) {
-				if (leaf.parent.isFullyExpanded()) {
-					break;
-				}
-			}
+			//if (leaf.isTerminal()) {
+			//	if (leaf.parent.isFullyExpanded()) {
+			//		break;
+			//	}
+			//}
 			simulations++;
 		}
 		// Change root by the selected move
@@ -273,22 +273,22 @@ class UCTGame extends Game {
 		return currentNode;
 	}
 	private double defaultPolicy(Node leaf) {
-		/* Uses uniformly random moves to reach a terminal state.
-		Reward is calculated as follows: 
-		   	Tie: 0
-		   	Victory for leaf activeAgent: maxMoves - movesAtEnd + 1 
-		   	Loss for leaf activeAgent: -maxMoves + movesAtEnd - 1
-		Then possibly normalize to [0, 1]*/
+		/* Uses uniformly random moves to reach a terminal state. */
+
 		Node currentNode = leaf;
 		// Random rollout
 		while(!currentNode.isTerminal()) {
 			currentNode = currentNode.getRandomChild();
 		}
-		// Assigning reward
-		//return (reward + areaOfBoard) / (2 * maxMoves);
-		return assignReward(leaf, currentNode);
+		// Assigning rescaled reward
+		return assignReward(leaf, currentNode)+areaOfBoard / (2 * areaOfBoard);
 	}
 	double assignReward(Node leaf, Node terminalNode) {
+		/* Uses uniformly random moves to reach a terminal state.
+		Reward is calculated as follows: 
+		   	Tie: 0
+		   	Victory for leaf activeAgent: maxMoves - movesAtEnd + 1 
+		   	Loss for leaf activeAgent: -maxMoves + movesAtEnd - 1 */
 		assert terminalNode.isTerminal();
 		if (terminalNode.getTerminalOutcome() == 3 - leaf.getActiveAgent())
 			return areaOfBoard - terminalNode.getNumberOfMoves() + 1;
