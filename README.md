@@ -2,9 +2,9 @@
 
 I implemented a simple generalized Tic-Tac-Toe game on a board of arbitrary size (so that there are relatively small amount of implementation details) using the following algorithms.
 
-(1) Evolutionary algorithms: These direct methods were only able to handle boards of maximum size 4x4. (The memoized versions)
+1. Evolutionary algorithms: These direct methods were only able to handle boards of maximum size 4x4. (The memoized versions)
 
-(a) Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree also with memoization. The search space for the $k$th move is $(n+1-k)!$ large, where $n$ stands for the area of the board and thus the total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
+a. Brute Force [Negamax](https://en.wikipedia.org/wiki/Negamax) search of the game tree also with memoization. The search space for the $k$th move is $(n+1-k)!$ large, where $n$ stands for the area of the board and thus the total running time to play a game (if the computer was playing against itself) would be given by the [Smarandache-Kurepa Function](http://mathworld.wolfram.com/LeftFactorial.html):
 
 $$K(n)=\sum_{k=1}^n(n+1-k)!=\sum_{k=1}^n k! $$
 
@@ -12,7 +12,7 @@ Here just the largest term is $16! = 20922789888000 \approx 2 * 10^{13}$ for a 4
 
 (You might need [GitHub with Math Jax](https://chrome.google.com/webstore/detail/github-with-                   mathjax/ioemnmodlmafdkllaclgeombjnmnbima/related) chrome extension to view the formula rendered.)
           
-(b) [Alpha-Beta Pruning](https://www.cs.cmu.edu/~arielpro/mfai_papers/lecture1.pdf) of the game tree. This approach               prunes the search tree and discards parts of it that are clearly suboptimal.
+b. [Alpha-Beta Pruning](https://www.cs.cmu.edu/~arielpro/mfai_papers/lecture1.pdf) of the game tree. This approach               prunes the search tree and discards parts of it that are clearly suboptimal.
       
 (2) Reinforcement learning:
 
